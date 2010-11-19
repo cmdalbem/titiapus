@@ -13,25 +13,17 @@ Jogo::Jogo( tipoJogador _jogadorBrancas, tipoJogador _jogadorPretas )
 {
 	turnoJogador = PRETO;
 	novo( _jogadorBrancas, _jogadorPretas );
-	
-	passar();
 }
 
 Jogo::~Jogo() {}
 
 
-void Jogo::novo( tipoJogador _jogadorBrancas, tipoJogador _jogadorPretas )
+void Jogo::posicoesIniciais()
 {
-    njogadas = 0;
-
-    jogador[BRANCO] = _jogadorBrancas;
-    jogador[PRETO] = _jogadorPretas;    
-    
-    // posições inicias das peças
     for(int i=0; i<2; i++)
         for(int j=0; j<NCOL; j++)
             campo.pecas[i][j] = PCPRETA;
-            
+    
     for(int i=3; i<5; i++)
         for(int j=0; j<NCOL; j++)
             campo.pecas[i][j] = PCBRANCA;
@@ -43,46 +35,44 @@ void Jogo::novo( tipoJogador _jogadorBrancas, tipoJogador _jogadorPretas )
     campo.pecas[2][4] = PCPRETA;
     campo.pecas[2][5] = PCBRANCA;
     campo.pecas[2][6] = PCPRETA;
-
-	campo.npecas[BRANCO] = campo.npecas[PRETO] = 17;
-	
-	testaJogadasObrigatorias();
 }
 
-void Jogo::executaJogada(  point origem, point destino )
+void Jogo::novo( tipoJogador _jogadorBrancas, tipoJogador _jogadorPretas )
+{
+    posicoesIniciais();
+    
+    njogadas = 0;
+
+    _jogadorBrancas == MAQUINA ? jogador[BRANCO] = new JogadorComputador() : jogador[BRANCO] = new JogadorHumano();
+    _jogadorPretas == MAQUINA ? jogador[PRETO] = new JogadorComputador() : jogador[PRETO] = new JogadorHumano();
+    
+	campo.npecas[BRANCO] = campo.npecas[PRETO] = 17;
+}
+
+void Jogo::executaJogada( Jogada jogada )
 {
 	njogadas++;
 	
-	pair<Estado,bool> novo = campo.movePeca(origem,destino);
+	pair<Estado,bool> novo = campo.movePeca(jogada.first,jogada.second);
 	campo = novo.first;
 	
-	vector< pair<point,point> > quaisPodeComer = campo.jogadasObrigatorias(destino);
-	
-	if(quaisPodeComer.size()==0 || jogador[turnoJogador]==MAQUINA)
-		passar();
-	else
-		testaJogadasObrigatorias();
 }
 
-void Jogo::passar()
+void Jogo::executarTurno()
 {
-	turnoJogador = turnoJogador==BRANCO ? PRETO : BRANCO;	
-	cout<<"-------- Vez do jogador "<< (turnoJogador==BRANCO?"BRANCO":"PRETO") << endl;
+	vector<Jogada> jogadasPossiveis;
 	
-	if(jogador[turnoJogador]==MAQUINA)
-	{
-		jogadasObrigatorias.clear();
 	
-		jogadasObrigatorias = campo.jogadasObrigatorias( turnoJogador );
-		
-		IA ia(niveisMinimax,campo,turnoJogador,jogadasObrigatorias);
-		pair<point,point> decisao = ia.decideJogada();
-		cout<<"$ Michael jogou: "<<decisao.first.first+1<<","<<decisao.first.second+1<<" -> "<<decisao.second.first+1<<","<<decisao.second.second+1<<endl;
-		executaJogada(  decisao.first, decisao.second );
-	}
-	else{	
-		testaJogadasObrigatorias();
-	}
+	
+	 
+	testaJogadasObrigatorias();
+	
+	jogador[turnoJogador].setaEstadoAtual(campo);
+	
+	executaJogada( jogador[turnoJogador].retornaJogada() );
+
+	// passa o turno
+	turnoJogador = turnoJogador==BRANCO ? PRETO : BRANCO;
 }
 
 void Jogo::testaJogadasObrigatorias()

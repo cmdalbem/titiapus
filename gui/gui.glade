@@ -10,7 +10,6 @@
     <child>
       <object class="GtkVBox" id="vbox2">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <object class="GtkMenuBar" id="menu">
             <property name="visible">True</property>
@@ -23,7 +22,7 @@
                   <object class="GtkMenu" id="menu1">
                     <property name="visible">True</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem1">
+                      <object class="GtkImageMenuItem" id="menuNovo">
                         <property name="label">gtk-new</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
@@ -60,7 +59,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem5">
+                      <object class="GtkImageMenuItem" id="menuSair">
                         <property name="label">gtk-quit</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
@@ -80,7 +79,7 @@
                   <object class="GtkMenu" id="menu2">
                     <property name="visible">True</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="resetar">
+                      <object class="GtkImageMenuItem" id="menuResetar">
                         <property name="label" translatable="yes">Resetar</property>
                         <property name="visible">True</property>
                         <property name="image">image1</property>
@@ -122,7 +121,6 @@
             <child>
               <object class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkFrame" id="frame1">
                     <property name="visible">True</property>
@@ -249,7 +247,6 @@
                             <child>
                               <object class="GtkVBox" id="vbox7">
                                 <property name="visible">True</property>
-                                <property name="orientation">vertical</property>
                                 <child>
                                   <object class="GtkLabel" id="painel1">
                                     <property name="visible">True</property>
@@ -300,7 +297,6 @@
                             <child>
                               <object class="GtkVBox" id="vbox8">
                                 <property name="visible">True</property>
-                                <property name="orientation">vertical</property>
                                 <child>
                                   <object class="GtkLabel" id="painel2">
                                     <property name="visible">True</property>
@@ -422,7 +418,6 @@ Ci&#xEA;ncia da Computa&#xE7;&#xE3;o UFRGS
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <object class="GtkHBox" id="hbox1">
@@ -430,7 +425,6 @@ Ci&#xEA;ncia da Computa&#xE7;&#xE3;o UFRGS
             <child>
               <object class="GtkVBox" id="vbox3">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkLabel" id="label4">
                     <property name="visible">True</property>
@@ -443,7 +437,6 @@ Ci&#xEA;ncia da Computa&#xE7;&#xE3;o UFRGS
                 <child>
                   <object class="GtkVBox" id="vbox5">
                     <property name="visible">True</property>
-                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkRadioButton" id="pretas_humano">
                         <property name="label" translatable="yes">Humano</property>
@@ -483,7 +476,6 @@ Ci&#xEA;ncia da Computa&#xE7;&#xE3;o UFRGS
             <child>
               <object class="GtkVBox" id="vbox4">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkLabel" id="label5">
                     <property name="visible">True</property>
@@ -496,7 +488,6 @@ Ci&#xEA;ncia da Computa&#xE7;&#xE3;o UFRGS
                 <child>
                   <object class="GtkVBox" id="vbox6">
                     <property name="visible">True</property>
-                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkRadioButton" id="brancas_humano">
                         <property name="label" translatable="yes">Humano</property>

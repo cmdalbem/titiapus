@@ -6,8 +6,8 @@ using namespace std;
 #include "constantes.h"
 
 
-float distanciaPontos( point a, point b );
+float distanciaPontos( Ponto a, Ponto b );
 
-bool estaContido( point pto, vector<point> ptos );
+bool estaContido( Ponto pto, vector<Ponto> ptos );
 
 bool estaDentroCampo(int i, int j);

@@ -13,10 +13,6 @@ using namespace std;
 Interface interface;
 
 
-/* Em razão da limitaçao do protótipo da função que conecta os
- *  sinais da interface GTK com as callbacks, não conseguimos 
- *  encapsular estas funções.
- */
 
 void novo_ok(GtkWidget *widget, gpointer label) { interface.novo_ok(); }
 
@@ -132,6 +128,10 @@ int main (int argc, char *argv[])
 		// spinner NIVEIS DE MINIMAX
 		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "niveisMinimax")),
 						  "value-changed", G_CALLBACK(niveisMinimaxCallback), NULL);
+		
+		// opções do menu superior
+		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "menuResetar")),
+						  "activate", G_CALLBACK(resetar), NULL);						  
 						  
 
         gtk_widget_show (interface.janela);       

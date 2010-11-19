@@ -32,8 +32,7 @@ void Interface::desenhaPeca( int posx, int posy, cor acor )
 	cairo_t *cr = gdk_cairo_create( pixmap );
 	cairo_set_line_width( cr, 2.5);
 	
-	if (acor==BRANCO)
-	{
+	if (acor==BRANCO) {
 		cairo_set_source_rgb( cr, 1, 1, 1);
 		cairo_arc( cr, posx, posy, PECA_RAIO, 0, 2*M_PI);
 		cairo_fill(cr);
@@ -41,8 +40,7 @@ void Interface::desenhaPeca( int posx, int posy, cor acor )
 		cairo_arc( cr, posx, posy , PECA_RAIO, 0, 2*M_PI);
 		cairo_stroke(cr);
 	}
-	else
-	{
+	else {
 		cairo_set_source_rgb( cr, 0, 0, 0);
 		cairo_arc(cr, posx, posy, PECA_RAIO, 0, 2*M_PI);
 		cairo_fill(cr);				   
@@ -58,19 +56,19 @@ void Interface::desenhaTabuleiro()
 	cairo_set_line_width( cr, 1.5);
 
 
-	// desenhando as linhas
+	// linhas
 	for(int i=0; i<NLIN; i++) {
 		cairo_move_to( cr, FRAMEX, ((TELAY-2*FRAMEY)/((float)NLIN-1))*i + FRAMEY );
 		cairo_line_to( cr, TELAX-FRAMEX, ((TELAY-2*FRAMEY)/((float)NLIN-1))*i + FRAMEY );
 	}
 
-	// desenhando as colunas
+	// colunas
 	for(int i=0; i<NCOL; i++) {
 		cairo_move_to( cr, ((TELAX-2*FRAMEX)/((float)NCOL-1))*i + FRAMEY, FRAMEY );
 		cairo_line_to( cr, ((TELAX-2*FRAMEX)/((float)NCOL-1))*i + FRAMEY, TELAY-FRAMEY );
 	}
 
-	// desenhando as diagonais
+	// diagonais
 	int oscilador=1;
 	for(int i=0; i<NLIN-1; i++) {
 		for(int j=0; j<NCOL-1; j++) {
@@ -159,35 +157,40 @@ void Interface::atualizaPainel()
 {
 	char txt[30];
 	
-	sprintf(txt, "<big><b>%s</b></big>", jogo->jogador[PRETO]==MAQUINA ? "Máquina":"Humano");
+	if(jogo->turnoJogador == PRETO)	
+		sprintf(txt, "<big><b>[%s]</b></big>", jogo->jogador[PRETO]==MAQUINA ? "Máquina":"Humano");
+	else
+		sprintf(txt, "<big>%s</big>", jogo->jogador[PRETO]==MAQUINA ? "Máquina":"Humano");
 	gtk_label_set_markup( (GtkLabel*)painel1, txt);
 	sprintf(txt, "<big>%i</big>", jogo->campo.npecas[PRETO]);
 	gtk_label_set_markup( (GtkLabel*)painel3, txt);
 	
-	sprintf(txt, "<big><b>%s</b></big>", jogo->jogador[BRANCO]==MAQUINA ? "Máquina":"Humano");
+	if(jogo->turnoJogador == BRANCO)	
+		sprintf(txt, "<big><b>[%s]</b></big>", jogo->jogador[BRANCO]==MAQUINA ? "Máquina":"Humano");
+	else
+		sprintf(txt, "<big>%s</big>", jogo->jogador[BRANCO]==MAQUINA ? "Máquina":"Humano");
 	gtk_label_set_markup( (GtkLabel*)painel2, txt);
 	sprintf(txt, "<big>%i</big>", jogo->campo.npecas[BRANCO]);
 	gtk_label_set_markup( (GtkLabel*)painel4, txt);
 
 }
 
-pair<int,point> Interface::qualElemento( int x, int y )
+pair<int,Ponto> Interface::qualElemento( int x, int y )
 {
 	int achou = -1;
-	point pto(-1,-1);
+	Ponto pto(-1,-1);
 	
 	for( int i=0; i<NLIN && achou==-1; i++ )
 		
 		for( int j=0; j<NCOL && achou==-1; j++ )
 		
-			if( distanciaPontos( point(POS(i,j)), point(x,y) ) < PECA_RAIO )
-			{
+			if( distanciaPontos( Ponto(POS(i,j)), Ponto(x,y) ) < PECA_RAIO ) {
 				achou = jogo->campo.pecas[i][j];
-				pto = point(i,j);
+				pto = Ponto(i,j);
 			}
 
 
-	return pair<int,point>(achou,pto);
+	return pair<int,Ponto>(achou,pto);
 }
 
 
@@ -195,7 +198,7 @@ void Interface::mouseSobre( int x, int y )
 {
 	if(acaoPendente==SELECAO) {
 		casa pecaRequerida;
-		pair<int,point> elem = qualElemento(x,y);
+		pair<int,Ponto> elem = qualElemento(x,y);
 			
 		
 		if(jogo->turnoJogador==BRANCO)
@@ -223,7 +226,7 @@ void Interface::cliqueEsquerdo( int x, int y )
 			pecaRequerida = PCPRETA;
 			
 
-		pair<int,point> clickd = qualElemento(x,y); //descobrimos em qual elemento o usuario clicou
+		pair<int,Ponto> clickd = qualElemento(x,y); //descobrimos em qual elemento o usuario clicou
 		
 		if( acaoPendente==SELECAO && clickd.first==pecaRequerida ){ //selecionou uma peca válida
 		
@@ -248,7 +251,7 @@ void Interface::cliqueEsquerdo( int x, int y )
 			}
 			else
 			{
-				vector<point> possibilidades = jogo->campo.listaPossibilidades(pecaSelecionada.first,pecaSelecionada.second);
+				vector<Ponto> possibilidades = jogo->campo.listaPossibilidades(pecaSelecionada.first,pecaSelecionada.second);
 				if( estaContido(clickd.second,possibilidades) ) //movimento válido
 					valido=true;
 			}
@@ -287,7 +290,7 @@ void Interface::mostraPossibilidades( int x, int y )
 	}
 	else
 	{
-		vector<point> possibilidades = jogo->campo.listaPossibilidades(x,y);
+		vector<Ponto> possibilidades = jogo->campo.listaPossibilidades(x,y);
 		
 		if( possibilidades.size() )	
 			for(unsigned int i=0; i<possibilidades.size(); i++)
@@ -309,7 +312,7 @@ void Interface::desenhaMarcador( int x, int y )
 	gtk_widget_draw(tela, NULL);
 }
 
-void Interface::selecionaPeca( point peca )
+void Interface::selecionaPeca( Ponto peca )
 {
 	pecaSelecionada = peca;
 	

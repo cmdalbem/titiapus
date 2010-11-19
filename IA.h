@@ -11,18 +11,18 @@ class IA
 {
 		public:
 			IA( int profundidade, Estado estado, cor meu_time );
-			IA( int profundidade, Estado estado, cor meu_time, vector< pair<point,point> > jogadasObrigatorias );
+			IA( int profundidade, Estado estado, cor meu_time, vector< Jogada > jogadasObrigatorias );
 			~IA() {};
 		
 			// atributos
 			Jogo 						*jogo;
 			int							profundidade;
 			Estado						estado;
-			vector< pair<point,point> > jogadasObrigatorias;
+			vector< Jogada > jogadasObrigatorias;
 			cor							meu_time;
 		
 			// funções
-			pair<point, point> 	decideJogada();
+			pair<Ponto, Ponto> 	decideJogada();
 			static float 		minimax(Estado inicial, int _profundidade, float alfa, float beta, cor cor_time);
 			static float 		utilidade(Estado estado, cor cor_time);
 			
