@@ -18,7 +18,7 @@ IA::IA( int _profundidade, Estado _estado, cor _meu_time )
 	meu_time = _meu_time;
 }
 
-IA::IA( int _profundidade, Estado _estado, cor _meu_time, vector< pair<point,point> > _jogadasObrigatorias )
+IA::IA( int _profundidade, Estado _estado, cor _meu_time, vector< Jogada > _jogadasObrigatorias )
 {
 	profundidade = _profundidade;
 	estado = _estado;
@@ -46,7 +46,7 @@ float IA::minimax(Estado inicial, int _profundidade, float alfa, float beta, cor
 	}
 }
 
-pair<point, point> IA::decideJogada()
+pair<Ponto, Ponto> IA::decideJogada()
 {
 	srand(time(0));
 	if(jogadasObrigatorias.size()>0)
@@ -54,7 +54,7 @@ pair<point, point> IA::decideJogada()
 	else
 	{
 		const vector<Estado> sucessores = estado.listaSucessores(meu_time);
-		const vector< pair<point,point> > jogadas = estado.listaPossibilidades(meu_time);
+		const vector< Jogada > jogadas = estado.listaPossibilidades(meu_time);
 
 		float max = -9999999;
 		int maxDecisao = 0;

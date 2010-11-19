@@ -16,7 +16,8 @@ using namespace std;
 #define PECA_RAIO 25
 
 
-typedef pair<int,int> point;
+typedef pair<int,int> Ponto;
+typedef pair<Ponto,Ponto> Jogada;
 
 enum cor
 {

@@ -7,12 +7,12 @@
 using namespace std;
 
 
-float distanciaPontos( point a, point b )
+float distanciaPontos( Ponto a, Ponto b )
 {
 	return sqrt( pow((a.first - b.first),2) + pow((a.second - b.second),2) );
 }
 
-bool estaContido( point pto, vector<point> ptos )
+bool estaContido( Ponto pto, vector<Ponto> ptos )
 {
 	for(unsigned int i=0; i<ptos.size(); i++)
 		if(ptos[i]==pto)
