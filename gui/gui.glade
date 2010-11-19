@@ -30,27 +30,11 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem2">
-                        <property name="label">gtk-open</property>
+                      <object class="GtkImageMenuItem" id="menuReseta">
+                        <property name="label">Resetar</property>
                         <property name="visible">True</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem3">
-                        <property name="label">gtk-save</property>
-                        <property name="visible">True</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem4">
-                        <property name="label">gtk-save-as</property>
-                        <property name="visible">True</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
+                        <property name="image">image4</property>
+                        <property name="use_stock">False</property>
                       </object>
                     </child>
                     <child>
@@ -130,8 +114,8 @@
                         <property name="visible">True</property>
                         <property name="layout_style">spread</property>
                         <child>
-                          <object class="GtkButton" id="botaoNovo">
-                            <property name="label" translatable="yes">NOVO</property>
+                          <object class="GtkButton" id="botaoComecar">
+                            <property name="label" translatable="yes">COME&#xC7;AR</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -140,19 +124,6 @@
                             <property name="expand">False</property>
                             <property name="fill">False</property>
                             <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="botaoResetar">
-                            <property name="label" translatable="yes">RESETAR</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">1</property>
                           </packing>
                         </child>
                         <child>
@@ -165,7 +136,7 @@
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
-                            <property name="position">2</property>
+                            <property name="position">1</property>
                           </packing>
                         </child>
                       </object>
@@ -576,5 +547,9 @@ Ci&#xEA;ncia da Computa&#xE7;&#xE3;o UFRGS
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="stock">gtk-media-rewind</property>
+  </object>
+  <object class="GtkImage" id="image4">
+    <property name="visible">True</property>
+    <property name="stock">gtk-revert-to-saved</property>
   </object>
 </interface>

@@ -2,12 +2,12 @@ CC = g++
 
 CFLAGS = -Wall
 
-MODULES = Estado IA Interface Jogo utils Jogador JogadorHumano JogadorComputador
+MODULES = Estado Interface Jogo utils Jogador JogadorHumano JogadorComputador
 OBJDIR = obj
 OBJNAMES = $(addsuffix .o,$(MODULES)) 
 OBJS = $(addprefix $(OBJDIR)/,$(OBJNAMES))
 
-LIBS = -export-dynamic `pkg-config --cflags --libs gtk+-2.0`
+LIBS = -export-dynamic `pkg-config --cflags --libs gtk+-2.0` 
 
 
 titiapus: main.cpp $(OBJS)

@@ -32,19 +32,16 @@ class Interface
 				pair<int,Ponto>	qualElemento( int x, int y );
 				
 				// callbacks botões
+				void			comecar();
 				void 			novo();
 				void 			resetar();
 				void			passar();
 				void 			novo_ok();
 				void 			novo_cancelar();
 				
-		private:
-				tipoAcaoPendente	acaoPendente;
-				Ponto				pecaSelecionada;
-				
+		private:				
 				// funções gerais
 				void 			selecionaPeca( Ponto peca );
-				void			deseleciona();
 				void			atualiza();
 				void			atualizaTela();
 				void			atualizaPainel();
@@ -54,7 +51,7 @@ class Interface
 				void 			desenhaPeca( int posx, int posy, cor acor );
 				void 			desenhaMarcador( int posx, int posy );
 				void 			desenhaTabuleiro();
-				void			mostraPossibilidades( int x, int y );
+				void			mostraPossibilidades( Ponto pto );
 	
 	
 };

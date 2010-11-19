@@ -16,15 +16,16 @@ class Jogo{
                 Estado 				campo;
 				//vector<Jogada> 		jogadasObrigatorias;
                 Jogador*			jogador[TOTAL_COR];
-				cor					turnoJogador;
+				Jogador*			jogadorAtual;
 				int					niveisMinimax;
                 
                 // funções
+                void				comecar();
                 void				novo( tipoJogador jogadorBrancas, tipoJogador jogadorPretas );
                 void				executaJogada( Jogada jogada );
                 void				executarTurno();
-                void				testaJogadasObrigatorias();
-                void				testaJogadasObrigatorias( Ponto peca );
+                void				passar();
+                vector<Jogada> 		getJogadasPossiveis();
         
         private:
                 int 				njogadas;

@@ -100,6 +100,12 @@ void Interface::atualizaTela()
 					  janela->allocation.height);
 	desenhaTabuleiro();
 	desenhaPecas();
+	
+	if(jogo->jogadorAtual->tipo == HUMANO && ((JogadorHumano*)jogo->jogadorAtual)->estado == SELECIONADO) {
+		selecionaPeca( ((JogadorHumano*)jogo->jogadorAtual)->pecaSelecionada );
+		mostraPossibilidades( ((JogadorHumano*)jogo->jogadorAtual)->pecaSelecionada );		
+	}
+	
 	gtk_widget_draw(tela, NULL);
 }
 
@@ -116,23 +122,26 @@ void Interface::inicializa()
 	atualiza();
 }
 
+void Interface::comecar()
+{
+	jogo->comecar();
+}
+
 void Interface::novo()
 {
-	acaoPendente = SELECAO;
+	// janela de seleção de jogadores
 	gtk_widget_show_all( dialog );
 }
 
 void Interface::resetar()
 {
-	jogo->novo( jogo->jogador[BRANCO],jogo->jogador[PRETO] );
+	jogo->novo( jogo->jogador[BRANCO]->tipo, jogo->jogador[PRETO]->tipo );
 	
 	atualiza();
 }
 
 void Interface::passar()
 {
-	jogo->jogadasObrigatorias.clear();
-	acaoPendente = SELECAO;
 	jogo->passar();
 }
 
@@ -140,8 +149,8 @@ void Interface::novo_ok()
 {
 	gtk_widget_hide_all( dialog );
 	
-	tipoJogador jogadorBrancas = gtk_toggle_button_get_active( (GtkToggleButton*)brancas_humano )==TRUE ? HUMANO : MAQUINA;
-	tipoJogador jogadorPretas = gtk_toggle_button_get_active( (GtkToggleButton*)pretas_humano )==TRUE ? HUMANO : MAQUINA;
+	tipoJogador jogadorBrancas = gtk_toggle_button_get_active( (GtkToggleButton*)brancas_humano )==TRUE ? HUMANO : COMPUTADOR;
+	tipoJogador jogadorPretas = gtk_toggle_button_get_active( (GtkToggleButton*)pretas_humano )==TRUE ? HUMANO : COMPUTADOR;
 	
 	jogo->novo(jogadorBrancas,jogadorPretas );
 	
@@ -157,22 +166,70 @@ void Interface::atualizaPainel()
 {
 	char txt[30];
 	
-	if(jogo->turnoJogador == PRETO)	
-		sprintf(txt, "<big><b>[%s]</b></big>", jogo->jogador[PRETO]==MAQUINA ? "Máquina":"Humano");
+	if(jogo->jogadorAtual->meuTime == PRETO)	
+		sprintf(txt, "<big><b>[%s]</b></big>", jogo->jogador[PRETO]->tipo==COMPUTADOR ? "Máquina":"Humano");
 	else
-		sprintf(txt, "<big>%s</big>", jogo->jogador[PRETO]==MAQUINA ? "Máquina":"Humano");
+		sprintf(txt, "<big>%s</big>", jogo->jogador[PRETO]->tipo==COMPUTADOR ? "Máquina":"Humano");
 	gtk_label_set_markup( (GtkLabel*)painel1, txt);
 	sprintf(txt, "<big>%i</big>", jogo->campo.npecas[PRETO]);
 	gtk_label_set_markup( (GtkLabel*)painel3, txt);
 	
-	if(jogo->turnoJogador == BRANCO)	
-		sprintf(txt, "<big><b>[%s]</b></big>", jogo->jogador[BRANCO]==MAQUINA ? "Máquina":"Humano");
+	if(jogo->jogadorAtual->meuTime == BRANCO)	
+		sprintf(txt, "<big><b>[%s]</b></big>", jogo->jogador[BRANCO]->tipo==COMPUTADOR ? "Máquina":"Humano");
 	else
-		sprintf(txt, "<big>%s</big>", jogo->jogador[BRANCO]==MAQUINA ? "Máquina":"Humano");
+		sprintf(txt, "<big>%s</big>", jogo->jogador[BRANCO]->tipo==COMPUTADOR ? "Máquina":"Humano");
 	gtk_label_set_markup( (GtkLabel*)painel2, txt);
 	sprintf(txt, "<big>%i</big>", jogo->campo.npecas[BRANCO]);
 	gtk_label_set_markup( (GtkLabel*)painel4, txt);
 
+}
+
+void Interface::mouseSobre( int x, int y )
+{
+	if( jogo->jogadorAtual->tipo==HUMANO &&
+		((JogadorHumano*)jogo->jogadorAtual)->estado == SELECIONADO )
+	{		
+		casa pecaRequerida;
+		pair<int,Ponto> elem = qualElemento(x,y);
+			
+		if(jogo->jogadorAtual->meuTime==BRANCO)
+			pecaRequerida = PCBRANCA;
+		else
+			pecaRequerida = PCPRETA;
+
+		if( elem.first == pecaRequerida )
+			mostraPossibilidades( elem.second );
+		else
+			atualizaTela();
+	}
+}
+
+
+void Interface::cliqueEsquerdo( int x, int y )
+{
+	if( jogo->jogadorAtual->tipo==HUMANO ) //é a vez de um humano jogar
+	{
+		pair<int,Ponto> clickd = qualElemento(x,y);
+		
+		if( clickd.first != -1 ) //clicou em uma casa				
+			switch( ((JogadorHumano*)jogo->jogadorAtual)->cliqueEsquerdo( (casa)clickd.first, clickd.second ) )
+			{
+				case PARADO:
+					puts("estado atual: parado");
+					break;
+				case SELECIONADO:
+					puts("estado atual: selecionado");
+					break;
+				case DECIDIU:
+					puts("estado atual: decidiu");
+					Jogada jogada = jogo->jogadorAtual->retornaJogada(jogo->getJogadasPossiveis());
+					if(jogada.first.first!=-1)				
+						jogo->executaJogada( jogada );
+					break;
+			}
+	}
+	
+	atualizaTela();
 }
 
 pair<int,Ponto> Interface::qualElemento( int x, int y )
@@ -189,121 +246,31 @@ pair<int,Ponto> Interface::qualElemento( int x, int y )
 				pto = Ponto(i,j);
 			}
 
-
 	return pair<int,Ponto>(achou,pto);
-}
-
-
-void Interface::mouseSobre( int x, int y )
-{
-	if(acaoPendente==SELECAO) {
-		casa pecaRequerida;
-		pair<int,Ponto> elem = qualElemento(x,y);
-			
-		
-		if(jogo->turnoJogador==BRANCO)
-			pecaRequerida = PCBRANCA;
-		else
-			pecaRequerida = PCPRETA;
-
-		if( elem.first == pecaRequerida )
-			mostraPossibilidades( elem.second.first, elem.second.second );
-		else
-			atualizaTela();
-	}
-}
-
-
-void Interface::cliqueEsquerdo( int x, int y )
-{
-	casa pecaRequerida;
-	
-	if( jogo->jogador[jogo->turnoJogador]==HUMANO ) //é a vez de um humano jogar
-	{
-		if(jogo->turnoJogador==BRANCO)
-			pecaRequerida = PCBRANCA;
-		else
-			pecaRequerida = PCPRETA;
-			
-
-		pair<int,Ponto> clickd = qualElemento(x,y); //descobrimos em qual elemento o usuario clicou
-		
-		if( acaoPendente==SELECAO && clickd.first==pecaRequerida ){ //selecionou uma peca válida
-		
-			selecionaPeca(clickd.second);
-			acaoPendente = ACAO;
-			mostraPossibilidades(pecaSelecionada.first,pecaSelecionada.second);
-		}
-		else if( acaoPendente==ACAO && clickd.second==pecaSelecionada ) //clicou denovo na mesma peça
-		{
-				deseleciona();
-		}
-		else if( acaoPendente==ACAO && clickd.first==NADA ) //tentou mover a peca para um espaço vazio
-		{
-			bool valido=false;
-			
-			if( jogo->jogadasObrigatorias.size()>0 )
-			{
-				for(unsigned int i=0; i<jogo->jogadasObrigatorias.size(); i++)
-					if(   jogo->jogadasObrigatorias[i].first.first==pecaSelecionada.first && jogo->jogadasObrigatorias[i].first.second==pecaSelecionada.second
-					   && jogo->jogadasObrigatorias[i].second.first==clickd.second.first && jogo->jogadasObrigatorias[i].second.second==clickd.second.second )
-						valido=true;
-			}
-			else
-			{
-				vector<Ponto> possibilidades = jogo->campo.listaPossibilidades(pecaSelecionada.first,pecaSelecionada.second);
-				if( estaContido(clickd.second,possibilidades) ) //movimento válido
-					valido=true;
-			}
-			
-			if(valido)
-			{
-				jogo->executaJogada(pecaSelecionada,clickd.second);
-				acaoPendente = SELECAO;
-				atualiza();
-			}
-		}
-		
-	}
-	else {} //é a vez de a máquina jogar, então a interface ignora o clique
 }
 
 void Interface::cliqueDireito( int x, int y )
 {
-	deseleciona();
+	if( jogo->jogadorAtual->tipo==HUMANO ) //é a vez de um humano jogar
+		((JogadorHumano*)jogo->jogadorAtual)->cliqueDireito( Ponto(x,y) );
+			
 	atualizaTela();
 }
 
-void Interface::deseleciona()
+void Interface::mostraPossibilidades( Ponto pto )
 {
-	atualizaTela();
-	acaoPendente = SELECAO;	
-}
-
-void Interface::mostraPossibilidades( int x, int y )
-{
-	if( jogo->jogadasObrigatorias.size()>0 )
-	{
-		for(unsigned int i=0; i<jogo->jogadasObrigatorias.size(); i++)
-			if( jogo->jogadasObrigatorias[i].first.first==x && jogo->jogadasObrigatorias[i].first.second==y )
-				desenhaMarcador( POS(jogo->jogadasObrigatorias[i].second.first,jogo->jogadasObrigatorias[i].second.second) );
-	}
-	else
-	{
-		vector<Ponto> possibilidades = jogo->campo.listaPossibilidades(x,y);
-		
-		if( possibilidades.size() )	
-			for(unsigned int i=0; i<possibilidades.size(); i++)
-				desenhaMarcador( POS(possibilidades[i].first,possibilidades[i].second) );
-	}
+	vector<Jogada> jogadasPossiveis = jogo->getJogadasPossiveis();
+	
+	for(unsigned int i=0; i<jogadasPossiveis.size(); i++)
+		if( jogadasPossiveis[i].first == pto )
+			desenhaMarcador( POS(jogadasPossiveis[i].second.first,jogadasPossiveis[i].second.second) );
 }
 
 
 void Interface::desenhaMarcador( int x, int y )
 {
 	cairo_t *cr = gdk_cairo_create( pixmap );
-	
-	
+
 	
 	cairo_set_source_rgb( cr, 0, 1, 0);
 	cairo_arc( cr, x, y , PECA_RAIO/3., 0, 2*M_PI);
@@ -314,8 +281,6 @@ void Interface::desenhaMarcador( int x, int y )
 
 void Interface::selecionaPeca( Ponto peca )
 {
-	pecaSelecionada = peca;
-	
 	// desenho:
 	
 	cairo_t *cr = gdk_cairo_create( pixmap );

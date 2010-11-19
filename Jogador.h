@@ -10,10 +10,12 @@ class Jogador
 		Jogador();
 		Jogador(const Estado& estado, cor time);
 		~Jogador();
+		
+		tipoJogador			tipo;
+		cor 				meuTime;
 
 		void 			setaEstadoAtual(const Estado& estadoAtual);
 		virtual Jogada 	retornaJogada( vector<Jogada> jogadasPossiveis ) = 0;
 	protected:
 		Estado 			estadoJogo;
-		cor 			meuTime;
 };

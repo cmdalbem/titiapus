@@ -3,16 +3,25 @@
 #include "Jogador.h"
 
 
+
+
 class JogadorHumano : public Jogador
 {
 	public:
-		JogadorHumano();
-		JogadorHumano(const Estado& estado, cor time);
+		JogadorHumano(cor time);
 		~JogadorHumano();
 
-		Jogada retornaJogada( vector<Jogada> jogadasPossiveis );
+		// atributos
+		tipoEstadoJogador	estado;
+		Ponto				pecaSelecionada;
+		
+		// funções
+		Jogada				retornaJogada( vector<Jogada> jogadasPossiveis );
+		tipoEstadoJogador	cliqueEsquerdo( casa peca, Ponto pos );
+		tipoEstadoJogador	cliqueDireito( Ponto clicado );
 		
 	private:
+		Jogada				jogadaDecidida;
 	
 	
 };

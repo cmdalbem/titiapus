@@ -33,12 +33,12 @@ enum casa
 
 enum tipoJogador
 {
-	HUMANO, MAQUINA
+	HUMANO, COMPUTADOR
 };
 
-enum tipoAcaoPendente
+enum tipoEstadoJogador
 {
-	SELECAO, ACAO
+	PARADO, SELECIONADO, DECIDIU
 };
 
 #define LIN(i) ((TELAY-2*FRAMEY)/((float)NLIN-1))*i + FRAMEY
