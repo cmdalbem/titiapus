@@ -90,7 +90,7 @@ int main (int argc, char *argv[])
         
         // lê XML da Glade
         builder = gtk_builder_new ();
-        gtk_builder_add_from_file (builder, "gui.glade", NULL);
+        gtk_builder_add_from_file (builder, "gui/gui.glade", NULL);
 
         // recupera ponteiros de widgets do XML da Glade
         interface.janela = GTK_WIDGET (gtk_builder_get_object (builder, "janela"));
@@ -106,10 +106,11 @@ int main (int argc, char *argv[])
 		interface.painel4 = GTK_WIDGET (gtk_builder_get_object (builder, "painel4"));
 
 		// conecta sinais das callbacks com a tela
-		gtk_signal_connect (GTK_OBJECT(interface.tela), "configure_event", (GtkSignalFunc) configure_event, NULL);
-		gtk_signal_connect (GTK_OBJECT(interface.tela), "expose_event", (GtkSignalFunc) expose_event, NULL);
-		gtk_signal_connect (GTK_OBJECT(interface.tela), "button_press_event", (GtkSignalFunc) clique, NULL);
-		gtk_signal_connect (GTK_OBJECT(interface.tela), "motion_notify_event", (GtkSignalFunc) movimento, NULL);
+		g_signal_connect(interface.janela, "destroy", G_CALLBACK(on_window_destroy), NULL);
+		g_signal_connect(interface.tela, "configure_event", (GtkSignalFunc) configure_event, NULL);
+		g_signal_connect(interface.tela, "expose_event", (GtkSignalFunc) expose_event, NULL);
+		g_signal_connect(interface.tela, "button_press_event", (GtkSignalFunc) clique, NULL);
+		g_signal_connect(interface.tela, "motion_notify_event", (GtkSignalFunc) movimento, NULL);
 			gtk_widget_set_events (interface.tela, GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK); // habilita mensagem de captura de clique no tabuleiro
 
 		
@@ -130,7 +131,7 @@ int main (int argc, char *argv[])
 						  "clicked", G_CALLBACK(passar), NULL);
 		// spinner NIVEIS DE MINIMAX
 		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "niveisMinimax")),
-						  "value-changed", G_CALLBACK(niveisMinimaxCallback), NULL);				  
+						  "value-changed", G_CALLBACK(niveisMinimaxCallback), NULL);
 						  
 
         gtk_widget_show (interface.janela);       
