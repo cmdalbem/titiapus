@@ -5,8 +5,7 @@
 class JogadorComputador : public Jogador
 {
 	public:
-		JogadorComputador();
-		JogadorComputador(const Estado& estado, cor time);
+		JogadorComputador(cor time);
 		~JogadorComputador();
 
 		Jogada 	        retornaJogada( vector<Jogada> jogadasPossiveis );

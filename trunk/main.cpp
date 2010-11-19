@@ -6,7 +6,6 @@ using namespace std;
 #include "constantes.h"
 #include "Jogo.h"
 #include "Interface.h"
-#include "IA.h"
 
 
 // Globais
@@ -21,6 +20,8 @@ void novo_cancelar(GtkWidget *widget, gpointer label) { interface.novo_cancelar(
 void novo(GtkWidget *widget, gpointer label) { interface.novo(); }
 
 void resetar(GtkWidget *widget, gpointer label) { interface.resetar(); }
+
+void comecar(GtkWidget *widget, gpointer label) { interface.comecar(); }
 
 void passar(GtkWidget *widget, gpointer label) { interface.passar(); }
     
@@ -116,12 +117,9 @@ int main (int argc, char *argv[])
 		// botão CANCELAR da dialog de Novo Jogo
 		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "novo_cancelar")),
 						  "clicked", G_CALLBACK(novo_cancelar), NULL);						  
-		// botão NOVO
-		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "botaoNovo")),
-						  "clicked", G_CALLBACK(novo), NULL);
-		// botão RESETAR
-		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "botaoResetar")),
-						  "clicked", G_CALLBACK(resetar), NULL);
+		// botão COMECAR
+		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "botaoComecar")),
+						  "clicked", G_CALLBACK(comecar), NULL);
 		// botão PASSAR
 		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "botaoPassar")),
 						  "clicked", G_CALLBACK(passar), NULL);
@@ -130,14 +128,16 @@ int main (int argc, char *argv[])
 						  "value-changed", G_CALLBACK(niveisMinimaxCallback), NULL);
 		
 		// opções do menu superior
-		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "menuResetar")),
+		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "menuReseta")),
 						  "activate", G_CALLBACK(resetar), NULL);						  
+		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "menuNovo")),
+						  "activate", G_CALLBACK(novo), NULL);			  						  
 						  
 
         gtk_widget_show (interface.janela);       
         
         // GTK Main loop
-        gtk_main ();
+        gtk_main();
         
         return 0;
 }

@@ -1,7 +1,6 @@
 #include <vector>
 
 #include "Estado.h"
-#include "utils.h"
 
 
 Estado::Estado() {};
@@ -13,9 +12,10 @@ Estado::Estado(const Estado & _estado)
 
 Estado::~Estado() {};
 
-vector<Ponto> Estado::listaPossibilidades( int i, int j ) const
+vector<Ponto> Estado::listaPossibilidades( Ponto pto ) const
 {
 	vector<Ponto> resultado;
+	int i=pto.first, j=pto.second;
 
 	// teste sem diagonais
 	// int var=i+1; //refatoracao
@@ -44,13 +44,13 @@ vector<Ponto> Estado::listaPossibilidades( int i, int j ) const
 	return resultado;
 }
 
-vector<Estado> Estado::listaSucessores( int i, int j ) const
+vector<Estado> Estado::listaSucessores( Ponto pto ) const
 {
 	vector<Estado> sucessores;
-	vector<Ponto> jogadas = listaPossibilidades(i,j);
+	vector<Ponto> jogadas = listaPossibilidades(pto);
 
 	for(unsigned int jog = 0; jog < jogadas.size() ; jog++)
-		sucessores.push_back( movePeca( Ponto(i,j), Ponto(jogadas[jog].first, jogadas[jog].second) ).first );
+		sucessores.push_back( movePeca( pto, Ponto(jogadas[jog].first, jogadas[jog].second) ).first );
 
 	return sucessores;
 }
@@ -88,7 +88,7 @@ vector< Jogada > Estado::listaPossibilidades( cor cor_pecas) const
 		for(int j = 0 ; j < NCOL ; j++)
 			if(pecas[i][j] == fail_code)
 			{
-				vector<Ponto> jogadas = listaPossibilidades(i,j);
+				vector<Ponto> jogadas = listaPossibilidades( Ponto(i,j) );
 
 				for(unsigned int k = 0; k < jogadas.size() ; ++k)
 				pares_jogadas.push_back(Jogada( Ponto(i,j), jogadas[k] ) );
@@ -106,7 +106,7 @@ vector<Estado> Estado::listaSucessores( cor cor_pecas ) const
 		for(int j = 0 ; j < NCOL ; j++)
 			if(pecas[i][j] == fail_code)
 			{
-				vector<Estado> sucessores_peca = listaSucessores(i,j);
+				vector<Estado> sucessores_peca = listaSucessores( Ponto(i,j) );
 				sucessores_cor.insert(sucessores_cor.begin(), sucessores_peca.begin(), sucessores_peca.end());
 			}
 
@@ -131,7 +131,7 @@ vector<Jogada> Estado::jogadasObrigatorias( cor cor_pecas ) const
 
 vector< Jogada > Estado::jogadasObrigatorias( Ponto peca ) const
 {
-	vector< Ponto > jogadas = listaPossibilidades(peca.first,peca.second);
+	vector< Ponto > jogadas = listaPossibilidades( peca );
 	vector< Jogada > comComilanca;
 
 	for(unsigned int i = 0 ; i < jogadas.size() ; ++i)

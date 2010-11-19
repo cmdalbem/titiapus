@@ -1,10 +1,13 @@
 #include "JogadorComputador.h"
 
-JogadorComputador::JogadorComputador() {}
-JogadorComputador::JogadorComputador(const Estado& estado, cor time) : Jogador(estado, time) {}
+JogadorComputador::JogadorComputador( cor time )
+{
+	tipo = COMPUTADOR;
+	meuTime = time;
+}
 JogadorComputador::~JogadorComputador() {}
 
-Jogada JogadorComputador::retornaJogada()
+Jogada JogadorComputador::retornaJogada( vector<Jogada> jogadasPossiveis )
 {
     //srand(time(0));
     vector<Jogada> jogadasObrigatorias = estadoJogo.jogadasObrigatorias(meuTime);

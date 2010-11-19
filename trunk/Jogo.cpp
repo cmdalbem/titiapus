@@ -1,22 +1,15 @@
 #include <iostream>
 using namespace std;
 
-#include "constantes.h"
-
 #include "Jogo.h"
-
-#include "IA.h"
-
 
 
 Jogo::Jogo( tipoJogador _jogadorBrancas, tipoJogador _jogadorPretas )
 {
-	turnoJogador = PRETO;
 	novo( _jogadorBrancas, _jogadorPretas );
 }
 
 Jogo::~Jogo() {}
-
 
 void Jogo::posicoesIniciais()
 {
@@ -37,14 +30,28 @@ void Jogo::posicoesIniciais()
     campo.pecas[2][6] = PCPRETA;
 }
 
+void Jogo::comecar()
+{
+	executarTurno();
+}
+
 void Jogo::novo( tipoJogador _jogadorBrancas, tipoJogador _jogadorPretas )
 {
     posicoesIniciais();
     
     njogadas = 0;
 
-    _jogadorBrancas == MAQUINA ? jogador[BRANCO] = new JogadorComputador() : jogador[BRANCO] = new JogadorHumano();
-    _jogadorPretas == MAQUINA ? jogador[PRETO] = new JogadorComputador() : jogador[PRETO] = new JogadorHumano();
+    if(_jogadorBrancas == COMPUTADOR)
+		jogador[BRANCO] = new JogadorComputador(BRANCO);
+	else
+		jogador[BRANCO] = new JogadorHumano(BRANCO);
+		
+	if(_jogadorPretas == COMPUTADOR)
+		jogador[PRETO] = new JogadorComputador(PRETO);
+	else
+		jogador[PRETO] = new JogadorHumano(PRETO);
+		
+	jogadorAtual = jogador[PRETO];
     
 	campo.npecas[BRANCO] = campo.npecas[PRETO] = 17;
 }
@@ -54,41 +61,39 @@ void Jogo::executaJogada( Jogada jogada )
 	njogadas++;
 	
 	pair<Estado,bool> novo = campo.movePeca(jogada.first,jogada.second);
-	campo = novo.first;
+	campo = novo.first;	
 	
+	passar();
 }
 
 void Jogo::executarTurno()
 {
-	vector<Jogada> jogadasPossiveis;
+	jogadorAtual->setaEstadoAtual(campo);
 	
-	
-	
-	 
-	testaJogadasObrigatorias();
-	
-	jogador[turnoJogador].setaEstadoAtual(campo);
-	
-	executaJogada( jogador[turnoJogador].retornaJogada() );
+	if(jogadorAtual->tipo==COMPUTADOR)
+		executaJogada( jogadorAtual->retornaJogada(getJogadasPossiveis()) );
+}
 
+vector<Jogada> Jogo::getJogadasPossiveis()
+{
+	vector<Jogada> jogadasPossiveis, jogadasObrigatorias;
+	
+	jogadasObrigatorias = campo.jogadasObrigatorias( jogadorAtual->meuTime );
+	if(jogadasObrigatorias.size())
+		jogadasPossiveis = jogadasObrigatorias;
+	else
+		jogadasPossiveis = campo.listaPossibilidades( jogadorAtual->meuTime );
+	
+	return jogadasPossiveis;	
+}
+
+void Jogo::passar()
+{
 	// passa o turno
-	turnoJogador = turnoJogador==BRANCO ? PRETO : BRANCO;
-}
-
-void Jogo::testaJogadasObrigatorias()
-{
-	jogadasObrigatorias.clear();
-	
-	jogadasObrigatorias = campo.jogadasObrigatorias( turnoJogador );
-	
-	cout<<jogadasObrigatorias.size()<<" jogadas obrigatorias"<<endl;
-}
-
-void Jogo::testaJogadasObrigatorias( point peca )
-{
-	jogadasObrigatorias.clear();
-	
-	jogadasObrigatorias = campo.jogadasObrigatorias( peca );
-	
-	cout<<jogadasObrigatorias.size()<<" jogadas obrigatorias"<<endl;
+	if(jogadorAtual==jogador[0])
+		jogadorAtual = jogador[1];
+	else
+		jogadorAtual = jogador[0];
+		
+	executarTurno();
 }
