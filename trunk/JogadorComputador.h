@@ -8,10 +8,12 @@ class JogadorComputador : public Jogador
 		JogadorComputador(cor time);
 		~JogadorComputador();
 
-		Jogada 	        retornaJogada( vector<Jogada> jogadasPossiveis );
-	private:
+		Jogada 	        retornaJogada();// vector<Jogada> jogadasPossiveis );
+	//private:
 		static float    minimax(const Estado& inicial, float alfa, float beta, int _profundidade, cor _meuTime);
 		static float 	utilidade(Estado estado, cor cor_time);
+
+    private:
 
 		int 			maxProfundidade;
 };
