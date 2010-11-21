@@ -14,30 +14,30 @@ Estado::~Estado() {};
 
 vector<Ponto> Estado::listaPossibilidades( Ponto pto ) const
 {
-	vector<Ponto> resultado;
+	vector<point> resultado;
 	int i=pto.first, j=pto.second;
 
 	// teste sem diagonais
 	// int var=i+1; //refatoracao
 	if( estaDentroCampo(i+1,j) && pecas[i+1][j] == NADA )
-		resultado.push_back( Ponto(i+1,j) );
+		resultado.push_back( point(i+1,j) );
 	if( estaDentroCampo(i-1,j) && pecas[i-1][j] == NADA )
-		resultado.push_back( Ponto(i-1,j) );
+		resultado.push_back( point(i-1,j) );
 	if(	estaDentroCampo(i,j+1) && pecas[i][j+1] == NADA )
-		resultado.push_back( Ponto(i,j+1) );
+		resultado.push_back( point(i,j+1) );
 	if(	estaDentroCampo(i,j-1) && pecas[i][j-1] == NADA )
-		resultado.push_back( Ponto(i,j-1) );
+		resultado.push_back( point(i,j-1) );
 
 	if( (i+j)%2 != 0 ) //soma das componentes é ímpar? = casa tem diagonais?
 	{
 		if( estaDentroCampo(i+1,j+1) && pecas[i+1][j+1] == NADA )
-			resultado.push_back( Ponto(i+1,j+1) );
+			resultado.push_back( point(i+1,j+1) );
 		if( estaDentroCampo(i-1,j-1) && pecas[i-1][j-1] == NADA )
-			resultado.push_back( Ponto(i-1,j-1) );
+			resultado.push_back( point(i-1,j-1) );
 		if(	estaDentroCampo(i-1,j+1) && pecas[i-1][j+1] == NADA )
-			resultado.push_back( Ponto(i-1,j+1) );
+			resultado.push_back( point(i-1,j+1) );
 		if(	estaDentroCampo(i+1,j-1) && pecas[i+1][j-1] == NADA )
-			resultado.push_back( Ponto(i+1,j-1) );
+			resultado.push_back( point(i+1,j-1) );
 	}
 
 
@@ -49,13 +49,14 @@ vector<Estado> Estado::listaSucessores( Ponto pto ) const
 	vector<Estado> sucessores;
 	vector<Ponto> jogadas = listaPossibilidades(pto);
 
+
 	for(unsigned int jog = 0; jog < jogadas.size() ; jog++)
 		sucessores.push_back( movePeca( pto, Ponto(jogadas[jog].first, jogadas[jog].second) ).first );
 
 	return sucessores;
 }
 
-pair<Estado,bool> Estado::movePeca( Ponto origem, Ponto destino ) const
+pair<Estado,bool> Estado::movePeca( point origem, point destino ) const
 {
 	Estado novo_estado(*this);
 
@@ -63,8 +64,8 @@ pair<Estado,bool> Estado::movePeca( Ponto origem, Ponto destino ) const
 	novo_estado.pecas[origem.first][origem.second] = NADA;
 	novo_estado.pecas[destino.first][destino.second] = peca_movida;
 	casa peca_inimiga = (peca_movida == PCBRANCA)? PCPRETA : PCBRANCA;
-	Ponto direcao(destino.first - origem.first, destino.second - origem.second); // Direção da peça
-	Ponto adjacente(destino.first + direcao.first, destino.second + direcao.second);
+	point direcao(destino.first - origem.first, destino.second - origem.second); // Direção da peça
+	point adjacente(destino.first + direcao.first, destino.second + direcao.second);
 	cor cor_peca_inimiga = (peca_inimiga == PCBRANCA)? BRANCO : PRETO;
 	bool comeu_peca = false;
 
@@ -79,10 +80,10 @@ pair<Estado,bool> Estado::movePeca( Ponto origem, Ponto destino ) const
 	return pair<Estado,bool>(novo_estado, comeu_peca);
 }
 
-vector< Jogada > Estado::listaPossibilidades( cor cor_pecas) const
+vector< pair<point,point> > Estado::listaPossibilidades( cor cor_pecas) const
 {
 	casa fail_code = cor_pecas == BRANCO? PCBRANCA : PCPRETA ;
-	vector< Jogada > pares_jogadas;
+	vector< pair<point,point> > pares_jogadas;
 
 	for(int i = 0 ; i < NLIN ; i++)
 		for(int j = 0 ; j < NCOL ; j++)
@@ -91,7 +92,7 @@ vector< Jogada > Estado::listaPossibilidades( cor cor_pecas) const
 				vector<Ponto> jogadas = listaPossibilidades( Ponto(i,j) );
 
 				for(unsigned int k = 0; k < jogadas.size() ; ++k)
-				pares_jogadas.push_back(Jogada( Ponto(i,j), jogadas[k] ) );
+				pares_jogadas.push_back(pair<point,point>( point(i,j), jogadas[k] ) );
 			}
 
 	return pares_jogadas;
@@ -114,10 +115,10 @@ vector<Estado> Estado::listaSucessores( cor cor_pecas ) const
 }
 
 
-vector<Jogada> Estado::jogadasObrigatorias( cor cor_pecas ) const
+vector< pair<point,point> > Estado::jogadasObrigatorias( cor cor_pecas ) const
 {
-	vector<Jogada> jogadas = listaPossibilidades(cor_pecas);
-	vector<Jogada> comComilanca;
+	vector< pair<point,point> > jogadas = listaPossibilidades(cor_pecas);
+	vector< pair<point,point> > comComilanca;
 
 	for(unsigned int i = 0 ; i < jogadas.size() ; ++i)
 	{
@@ -129,7 +130,7 @@ vector<Jogada> Estado::jogadasObrigatorias( cor cor_pecas ) const
 	return comComilanca;
 }
 
-vector< Jogada > Estado::jogadasObrigatorias( Ponto peca ) const
+vector< pair<point,point> > Estado::jogadasObrigatorias( point peca ) const
 {
 	vector< Ponto > jogadas = listaPossibilidades( peca );
 	vector< Jogada > comComilanca;
@@ -138,8 +139,19 @@ vector< Jogada > Estado::jogadasObrigatorias( Ponto peca ) const
 	{
 		pair<Estado,bool> move_sem_nome = movePeca(peca, jogadas[i]);
 		if( move_sem_nome.second ) //ou seja, há comilança de peças
-			comComilanca.push_back( Jogada(peca,jogadas[i]) );
+			comComilanca.push_back( pair<point,point>(peca,jogadas[i]) );
 	}
 
 	return comComilanca;
+}
+
+void Estado::print() const
+{
+    for(int i = 0; i < NLIN; i++)
+    {
+        for(int j = 0; j < NCOL; j++)
+            printf("%d", pecas[i][j]);
+        printf("\n");
+    }
+    printf("Pecas Brancas: %d\nPecas Pretas: %d\n", npecas[BRANCO], npecas[PRETO]);
 }
