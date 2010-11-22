@@ -11,3 +11,5 @@ float distanciaPontos( Ponto a, Ponto b );
 bool estaContido( Ponto pto, vector<Ponto> ptos );
 
 bool estaDentroCampo(int i, int j);
+
+void printJogadas( vector<Jogada> j );

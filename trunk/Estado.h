@@ -17,8 +17,7 @@ class Estado
 				casa 				pecas[NLIN][NCOL];
 				int  				npecas[TOTAL_COR];
 
-
-				vector<Ponto> 		listaPossibilidades( Ponto pto ) const;
+				vector< Jogada >	listaPossibilidades( Ponto peca ) const;
 				vector< Jogada > 	listaPossibilidades( cor cor_pecas ) const;
 				vector<Estado> 		listaSucessores( Ponto pto) const;
 				vector<Estado>  	listaSucessores( cor cor_pecas ) const;

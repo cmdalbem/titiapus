@@ -101,6 +101,7 @@ int main (int argc, char *argv[])
 		interface.painel2 = GTK_WIDGET (gtk_builder_get_object (builder, "painel2"));
 		interface.painel3 = GTK_WIDGET (gtk_builder_get_object (builder, "painel3"));
 		interface.painel4 = GTK_WIDGET (gtk_builder_get_object (builder, "painel4"));
+		interface.painelTurnos = GTK_WIDGET (gtk_builder_get_object (builder, "painelTurnos"));
 
 		// conecta sinais das callbacks com a tela
 		g_signal_connect(interface.janela, "destroy", G_CALLBACK(on_window_destroy), NULL);
@@ -132,6 +133,8 @@ int main (int argc, char *argv[])
 						  "activate", G_CALLBACK(resetar), NULL);						  
 		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "menuNovo")),
 						  "activate", G_CALLBACK(novo), NULL);			  						  
+		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "menuSair")),
+						  "activate", G_CALLBACK(gtk_main_quit), NULL);			  							  
 						  
 
         gtk_widget_show (interface.janela);       

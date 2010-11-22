@@ -1,10 +1,6 @@
 #include "JogadorHumano.h"
 
-JogadorHumano::JogadorHumano(cor time)
-{
-	tipo = HUMANO;
-	meuTime = time;
-}
+JogadorHumano::JogadorHumano(cor time) : Jogador(time,HUMANO) {}
 
 JogadorHumano::~JogadorHumano() {}
 
@@ -20,7 +16,9 @@ tipoEstadoJogador JogadorHumano::cliqueEsquerdo( casa casaClicada, Ponto pos )
 				pecaSelecionada = pos;
 				estado = SELECIONADO;
 				return SELECIONADO;
-			}		
+			}
+			else
+				return PARADO;
 			break;
 			
 		case SELECIONADO:

@@ -7,12 +7,11 @@
 class Jogador
 {
 	public:
-		Jogador();
-		Jogador(const Estado& estado, cor time);
+		Jogador(cor time, tipoJogador tipo );
 		~Jogador();
 		
-		tipoJogador			tipo;
-		cor 				meuTime;
+		tipoJogador		tipo;
+		cor 			meuTime;
 
 		void 			setaEstadoAtual(const Estado& estadoAtual);
 		virtual Jogada 	retornaJogada( vector<Jogada> jogadasPossiveis ) = 0;

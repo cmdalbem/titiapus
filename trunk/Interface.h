@@ -21,6 +21,7 @@ class Interface
 				GdkPixmap 			*pixmap; //mapa de pixels da tela do tabuleiro
 				GtkWidget			*pretas_humano, *brancas_humano;
 				GtkWidget			*painel1, *painel2, *painel3, *painel4;
+				GtkWidget			*painelTurnos;
 								
 				
 				void 			inicializa();
@@ -41,7 +42,6 @@ class Interface
 				
 		private:				
 				// funções gerais
-				void 			selecionaPeca( Ponto peca );
 				void			atualiza();
 				void			atualizaTela();
 				void			atualizaPainel();
@@ -49,7 +49,9 @@ class Interface
 				// desenho
 				void 			desenhaPecas();
 				void 			desenhaPeca( int posx, int posy, cor acor );
-				void 			desenhaMarcador( int posx, int posy );
+				void 			marcaPosicao( int posx, int posy );
+				void 			marcaSelecionada( Ponto peca );
+				void 			marcaObrigatoria( Ponto peca );
 				void 			desenhaTabuleiro();
 				void			mostraPossibilidades( Ponto pto );
 	

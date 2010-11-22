@@ -3,7 +3,8 @@
 #include "constantes.h"
 
 #include "math.h"
-#include "vector"
+#include <vector>
+#include <stdio.h>
 using namespace std;
 
 
@@ -26,4 +27,11 @@ bool estaDentroCampo(int i, int j)
 	  (i >= 0) &&
 	  (j < NCOL) &&
 	  (j >= 0) );
+}
+
+void printJogadas( vector<Jogada> j )
+{
+	printf("Lista de jogadas:\n");
+	for(int i=0; i<j.size(); i++)
+		printf("::(%i,%i)->(%i,%i)\n",j[i].first.first,j[i].first.second,j[i].second.first, j[i].second.second);
 }
