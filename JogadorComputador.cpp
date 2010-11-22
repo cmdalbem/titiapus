@@ -1,14 +1,7 @@
 #include "JogadorComputador.h"
 
 
-JogadorComputador::JogadorComputador() : Jogador(), maxProfundidade(8) {}
-JogadorComputador::JogadorComputador(const Estado& estado, cor time) : Jogador(estado, time), maxProfundidade(8) {}
-
-JogadorComputador::JogadorComputador( cor time )
-{
-	tipo = COMPUTADOR;
-	meuTime = time;
-}
+JogadorComputador::JogadorComputador(cor time, int minimax) : Jogador(time,COMPUTADOR), maxProfundidade(minimax) {}
 
 JogadorComputador::~JogadorComputador() {}
 

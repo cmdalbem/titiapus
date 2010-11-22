@@ -18,6 +18,8 @@ class Jogo{
                 Jogador*			jogador[TOTAL_COR];
 				Jogador*			jogadorAtual;
 				int					niveisMinimax;
+                int 				njogadas;		
+                bool				esperandoJogada;		
                 
                 // funções
                 void				comecar();
@@ -26,10 +28,12 @@ class Jogo{
                 void				executarTurno();
                 void				passar();
                 vector<Jogada> 		getJogadasPossiveis();
+                vector<Jogada>		getJogadasObrigatorias();
         
         private:
-                int 				njogadas;
+                vector<Jogada>		ultimasJogadas;
                 
                 void				posicoesIniciais();
+                vector<Jogada> 		tiraJogadasRepetidas( vector<Jogada> jogadas );
 };
 

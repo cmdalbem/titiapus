@@ -39,31 +39,45 @@ void Jogo::novo( tipoJogador _jogadorBrancas, tipoJogador _jogadorPretas )
 {
     posicoesIniciais();
     
+    ultimasJogadas.clear();
     njogadas = 0;
+    esperandoJogada = false;
 
     if(_jogadorBrancas == COMPUTADOR)
-		jogador[BRANCO] = new JogadorComputador(BRANCO);
+		jogador[BRANCO] = new JogadorComputador(BRANCO,2);
 	else
 		jogador[BRANCO] = new JogadorHumano(BRANCO);
 		
 	if(_jogadorPretas == COMPUTADOR)
-		jogador[PRETO] = new JogadorComputador(PRETO);
+		jogador[PRETO] = new JogadorComputador(PRETO,2);
 	else
 		jogador[PRETO] = new JogadorHumano(PRETO);
 		
-	jogadorAtual = jogador[PRETO];
+	jogadorAtual = jogador[BRANCO];
     
 	campo.npecas[BRANCO] = campo.npecas[PRETO] = 17;
 }
 
 void Jogo::executaJogada( Jogada jogada )
 {
+	esperandoJogada = false;
 	njogadas++;
+	ultimasJogadas.push_back(jogada);
 	
-	pair<Estado,bool> novo = campo.movePeca(jogada.first,jogada.second);
-	campo = novo.first;	
-	
-	passar();
+	pair<Estado,bool> jogadinha = campo.movePeca(jogada.first,jogada.second);
+	campo = jogadinha.first;	
+
+	vector<Jogada> possiveis = getJogadasPossiveis();
+
+	//printJogadas(possiveis);
+
+	if(!jogadinha.second || possiveis.size()==0) //se nao comeu peça ou nao tem mais jogadas possiveis
+		passar();
+	else
+		if(jogadorAtual->tipo==HUMANO)
+			esperandoJogada = true;
+		else
+			executarTurno();
 }
 
 void Jogo::executarTurno()
@@ -71,20 +85,55 @@ void Jogo::executarTurno()
 	jogadorAtual->setaEstadoAtual(campo);
 	
 	if(jogadorAtual->tipo==COMPUTADOR)
+	{
+		cout << "minimax!" << endl;
 		executaJogada( jogadorAtual->retornaJogada(getJogadasPossiveis()) );
+	}
+	else
+		esperandoJogada = true;
+}
+
+vector<Jogada> Jogo::tiraJogadasRepetidas( vector<Jogada> jogadas )
+{
+	for(int k=0; k<jogadas.size(); k++)
+		for(int i=0; i<ultimasJogadas.size(); i++)
+			if(jogadas[k].second == ultimasJogadas[i].first)
+				jogadas.erase(jogadas.begin()+k);
+
+	return jogadas;
 }
 
 vector<Jogada> Jogo::getJogadasPossiveis()
 {
 	vector<Jogada> jogadasPossiveis, jogadasObrigatorias;
 	
-	jogadasObrigatorias = campo.jogadasObrigatorias( jogadorAtual->meuTime );
-	if(jogadasObrigatorias.size())
-		jogadasPossiveis = jogadasObrigatorias;
-	else
-		jogadasPossiveis = campo.listaPossibilidades( jogadorAtual->meuTime );
+	if( ultimasJogadas.size() )
+		return getJogadasObrigatorias();
+	else {
+		jogadasObrigatorias = getJogadasObrigatorias();		
+	
+		if(jogadasObrigatorias.size())
+			jogadasPossiveis = jogadasObrigatorias;
+		else
+			jogadasPossiveis = campo.listaPossibilidades( jogadorAtual->meuTime );
+	}
 	
 	return jogadasPossiveis;	
+}
+
+vector<Jogada> Jogo::getJogadasObrigatorias()
+{
+	if(ultimasJogadas.size()) // já comeu uma peça neste turno
+	{
+		Jogada ultima = ultimasJogadas[ultimasJogadas.size()-1];
+		//cout<<"obrigatorias jah comi: "<<campo.jogadasObrigatorias( ultima.second ).size()<<endl;
+		return tiraJogadasRepetidas( campo.jogadasObrigatorias( ultima.second ) );
+	}
+	else // primeira jogada do turno
+	{
+		//cout<<"obrigatorias nao comi"<<endl;
+		return campo.jogadasObrigatorias( jogadorAtual->meuTime );
+	}
 }
 
 void Jogo::passar()
@@ -95,5 +144,7 @@ void Jogo::passar()
 	else
 		jogadorAtual = jogador[0];
 		
+	ultimasJogadas.clear();
+	
 	executarTurno();
 }

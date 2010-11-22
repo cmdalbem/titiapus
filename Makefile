@@ -10,7 +10,7 @@ OBJS = $(addprefix $(OBJDIR)/,$(OBJNAMES))
 LIBS = -export-dynamic `pkg-config --cflags --libs gtk+-2.0` 
 
 
-titiapus: main.cpp $(OBJS)
+main: main.cpp $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(FLAGS) $(LIBS)
 
 $(OBJDIR)/%.o: %.cpp %.h | $(OBJDIR)

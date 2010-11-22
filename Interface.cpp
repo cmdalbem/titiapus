@@ -101,10 +101,23 @@ void Interface::atualizaTela()
 	desenhaTabuleiro();
 	desenhaPecas();
 	
-	if(jogo->jogadorAtual->tipo == HUMANO && ((JogadorHumano*)jogo->jogadorAtual)->estado == SELECIONADO) {
-		selecionaPeca( ((JogadorHumano*)jogo->jogadorAtual)->pecaSelecionada );
-		mostraPossibilidades( ((JogadorHumano*)jogo->jogadorAtual)->pecaSelecionada );		
-	}
+	if(jogo->esperandoJogada)
+		switch( ((JogadorHumano*)jogo->jogadorAtual)->estado )
+		{
+			case PARADO:
+			{
+				vector<Jogada> obrigatorias = jogo->getJogadasObrigatorias();
+				for(int i=0; i<obrigatorias.size(); i++)
+					marcaObrigatoria( obrigatorias[i].first );
+				
+				break;
+			}
+			
+			case SELECIONADO:
+				marcaSelecionada( ((JogadorHumano*)jogo->jogadorAtual)->pecaSelecionada );
+				mostraPossibilidades( ((JogadorHumano*)jogo->jogadorAtual)->pecaSelecionada );		
+				break;
+		}
 	
 	gtk_widget_draw(tela, NULL);
 }
@@ -125,6 +138,7 @@ void Interface::inicializa()
 void Interface::comecar()
 {
 	jogo->comecar();
+	atualizaTela();
 }
 
 void Interface::novo()
@@ -143,6 +157,8 @@ void Interface::resetar()
 void Interface::passar()
 {
 	jogo->passar();
+	
+	atualiza();
 }
 
 void Interface::novo_ok()
@@ -181,23 +197,21 @@ void Interface::atualizaPainel()
 	gtk_label_set_markup( (GtkLabel*)painel2, txt);
 	sprintf(txt, "<big>%i</big>", jogo->campo.npecas[BRANCO]);
 	gtk_label_set_markup( (GtkLabel*)painel4, txt);
+	
+	sprintf(txt, "%i", jogo->njogadas);
+	gtk_label_set_markup( (GtkLabel*)painelTurnos, txt);
 
 }
 
 void Interface::mouseSobre( int x, int y )
 {
-	if( jogo->jogadorAtual->tipo==HUMANO &&
-		((JogadorHumano*)jogo->jogadorAtual)->estado == SELECIONADO )
+	if( jogo->esperandoJogada &&
+		((JogadorHumano*)jogo->jogadorAtual)->estado == PARADO )
 	{		
-		casa pecaRequerida;
 		pair<int,Ponto> elem = qualElemento(x,y);
-			
-		if(jogo->jogadorAtual->meuTime==BRANCO)
-			pecaRequerida = PCBRANCA;
-		else
-			pecaRequerida = PCPRETA;
 
-		if( elem.first == pecaRequerida )
+		cout<<elem.first<<endl;
+		if(elem.first==PCPRETA || elem.first==PCBRANCA)
 			mostraPossibilidades( elem.second );
 		else
 			atualizaTela();
@@ -207,7 +221,7 @@ void Interface::mouseSobre( int x, int y )
 
 void Interface::cliqueEsquerdo( int x, int y )
 {
-	if( jogo->jogadorAtual->tipo==HUMANO ) //é a vez de um humano jogar
+	if(jogo->esperandoJogada) // estamos esperando uma entrada
 	{
 		pair<int,Ponto> clickd = qualElemento(x,y);
 		
@@ -223,13 +237,15 @@ void Interface::cliqueEsquerdo( int x, int y )
 				case DECIDIU:
 					puts("estado atual: decidiu");
 					Jogada jogada = jogo->jogadorAtual->retornaJogada(jogo->getJogadasPossiveis());
-					if(jogada.first.first!=-1)				
+					if(jogada.first.first!=-1) {
 						jogo->executaJogada( jogada );
+						((JogadorHumano*)jogo->jogadorAtual)->estado = PARADO;
+					}
 					break;
 			}
 	}
 	
-	atualizaTela();
+	atualiza();
 }
 
 pair<int,Ponto> Interface::qualElemento( int x, int y )
@@ -251,47 +267,57 @@ pair<int,Ponto> Interface::qualElemento( int x, int y )
 
 void Interface::cliqueDireito( int x, int y )
 {
-	if( jogo->jogadorAtual->tipo==HUMANO ) //é a vez de um humano jogar
+	if(jogo->esperandoJogada) {
 		((JogadorHumano*)jogo->jogadorAtual)->cliqueDireito( Ponto(x,y) );
-			
-	atualizaTela();
+		atualizaTela();
+	}
 }
 
-void Interface::mostraPossibilidades( Ponto pto )
+void Interface::mostraPossibilidades( Ponto peca )
 {
 	vector<Jogada> jogadasPossiveis = jogo->getJogadasPossiveis();
-	
+
 	for(unsigned int i=0; i<jogadasPossiveis.size(); i++)
-		if( jogadasPossiveis[i].first == pto )
-			desenhaMarcador( POS(jogadasPossiveis[i].second.first,jogadasPossiveis[i].second.second) );
+		if( jogadasPossiveis[i].first == peca )
+			marcaPosicao( POS(jogadasPossiveis[i].second.first,jogadasPossiveis[i].second.second) );
 }
 
 
-void Interface::desenhaMarcador( int x, int y )
+void Interface::marcaPosicao( int x, int y )
 {
 	cairo_t *cr = gdk_cairo_create( pixmap );
-
 	
-	cairo_set_source_rgb( cr, 0, 1, 0);
+	cairo_set_source_rgb( cr, 1, 0, 0);
 	cairo_arc( cr, x, y , PECA_RAIO/3., 0, 2*M_PI);
 	cairo_stroke(cr);	
 	
 	gtk_widget_draw(tela, NULL);
 }
 
-void Interface::selecionaPeca( Ponto peca )
+void Interface::marcaSelecionada( Ponto peca )
 {
-	// desenho:
-	
 	cairo_t *cr = gdk_cairo_create( pixmap );
 	
+	cairo_set_line_width( cr, 3);
+	cairo_set_source_rgb( cr, 0, 0, 1);
+	cairo_arc( cr, POS(peca.first,peca.second) , PECA_RAIO*1, 0, 2*M_PI);
+	cairo_stroke(cr);	
+	
+	gtk_widget_draw(tela, NULL);
+}	
+
+void Interface::marcaObrigatoria( Ponto peca )
+{
+	cairo_t *cr = gdk_cairo_create( pixmap );
+	
+	cairo_set_line_width( cr, 3);
 	double dashes[] = {5.0, 5.0};
 	int    ndash  = sizeof (dashes)/sizeof(dashes[0]);
 	double offset = -50.0;
 	cairo_set_dash (cr, dashes, ndash, offset);
-
-	cairo_set_source_rgb( cr, 0, 0, 1);
-	cairo_arc( cr, POS(peca.first,peca.second) , PECA_RAIO*1.2, 0, 2*M_PI);
+	
+	cairo_set_source_rgb( cr, 1, 0, 0);
+	cairo_arc( cr, POS(peca.first,peca.second) , PECA_RAIO*1.1, 0, 2*M_PI);
 	cairo_stroke(cr);	
 	
 	gtk_widget_draw(tela, NULL);

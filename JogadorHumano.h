@@ -2,9 +2,6 @@
 
 #include "Jogador.h"
 
-
-
-
 class JogadorHumano : public Jogador
 {
 	public:
