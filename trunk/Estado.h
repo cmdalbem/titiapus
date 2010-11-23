@@ -20,6 +20,7 @@ class Linha
 
         void set (u_int16 lin) { _linha = lin; }
 		void set(int index, casa valor);
+		void limpaReservadas();
 
 		casa operator[] (int index) const;
 		Linha& operator= (const Linha& outro) { set(outro.get()); return *this; }
@@ -42,6 +43,7 @@ class Estado
 				int  				npecas[TOTAL_COR];
 
 				void                setaCasa(int x, int y, casa valor);
+				void                limpaReservadas();
 
 				vector< Jogada >	listaPossibilidades( Ponto peca ) const;
 				vector< Jogada > 	listaPossibilidades( cor cor_pecas ) const;
