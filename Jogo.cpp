@@ -111,10 +111,24 @@ void Jogo::executarTurno()
 				esperandoJogada = true;			
 		}
 	}
-	if(jogadorAtual->tipo==COMPUTADOR)
+	else
 		{
+			Estado anterior = campo;
 			campo = jogadorAtual->retornaJogada();
-			passar();
+			
+			bool comeu = (anterior.npecas[BRANCO]+anterior.npecas[PRETO]) -
+						 (campo.npecas[BRANCO]+campo.npecas[PRETO])
+						 > 0;
+			
+			vector<Jogada> possiveis = campo.getJogadasPossiveis(jogadorAtual->meuTime);
+			
+			if(!comeu || possiveis.size()==0) //se nao comeu peça ou nao tem mais jogadas possiveis
+				passar();
+			else {
+				//atualizarTela();
+				//sleep(1);
+				executarTurno();			
+			}
 		}
 }
 
@@ -129,7 +143,11 @@ void Jogo::passar()
 		cout << "Jogador 1:" << endl;
 		jogadorAtual = jogador[0];
 	}
-	//printJogadas(campo.ultimasJogadas);
+	
+	///////////////////////////////////////////////////////////////////
+	// HABILITE-ME HABILITE-ME HABILITE-ME HABILITE-ME HABILITE-ME ////
+	///////////////////////////////////////////////////////////////////
+	printJogadas(campo.ultimasJogadas);
 		
 	campo.ultimasJogadas.clear();
 	

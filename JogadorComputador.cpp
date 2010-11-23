@@ -12,14 +12,14 @@ Estado JogadorComputador::retornaJogada()
 {
 	const vector<Estado> sucessores = estadoJogo.listaSucessores(meuTime);
 	
+	/*
 	for(int i=0;i<sucessores.size();i++)
 		printJogadas(sucessores[i].ultimasJogadas);
+	*/
 
 	float max = -9999999;
 	int maxDecisao = 0;
 	
-	cout << "PROFUNDIDADE=" << maxProfundidade;
-
 	for (unsigned int i = 0; i < sucessores.size(); ++i)
 	{
 		float newMax = minimax(sucessores[i], -9999999, 9999999 , maxProfundidade-1, meuTime == BRANCO? PRETO : BRANCO);
@@ -35,10 +35,12 @@ Estado JogadorComputador::retornaJogada()
 
 float JogadorComputador::minimax(const Estado& atual, float alfa, float beta, int _profundidade, cor _meuTime)
 {
-    if ( _profundidade == 0)
-	{ //should test if is leaf, but nah :)
-		return JogadorComputador::utilidade(atual, _meuTime);
-	}
+	if ( _profundidade < 0 )
+		return -9999999;
+	else if ( _profundidade == 0)
+		{ //should test if is leaf, but nah :)
+			return JogadorComputador::utilidade(atual, _meuTime);
+		}
 	else
 	{
 		vector<Estado> filhos = atual.listaSucessores(_meuTime);
