@@ -107,10 +107,17 @@ vector<Estado> Estado::listaSucessoresObrigatorios( Ponto peca ) const
 {
 	vector<Estado> sucessores;
 	vector<Jogada> jogadas = getJogadasObrigatorias(peca);
+	vector<Estado> recSuc;
 
-	for(unsigned int jog = 0; jog < jogadas.size() ; jog++)
-		sucessores.push_back( movePeca( peca, jogadas[jog].second ).first );
-
+	for(unsigned int jog = 0; jog < jogadas.size() ; jog++) {
+		Estado filho = movePeca( peca, jogadas[jog].second ).first;
+		sucessores.push_back( filho );
+		
+		//cor cor_peca = pecas[jogadas[jog].second.first][jogadas[jog].second.second]==PCPRETA ? PRETO : BRANCO;
+		//recSuc = filho.listaSucessores(cor_peca);
+		//sucessores.insert(sucessores.begin(), recSuc.begin(), recSuc.end());			
+	}
+	
 	return sucessores;
 }
 
@@ -279,7 +286,14 @@ vector<Jogada> Estado::getJogadasPossiveis( Ponto peca ) const
 
 vector<Jogada> Estado::getJogadasObrigatorias( Ponto peca ) const
 {
-	return jogadasObrigatorias( peca );
+	vector<Jogada> vacuo;
+	
+	if(ultimasJogadas.size()) {
+		if( ultimasJogadas[ultimasJogadas.size()-1].second == peca )
+			return jogadasObrigatorias( peca );
+		else
+			return vacuo;
+	}
 }
 
 vector<Jogada> Estado::getJogadasObrigatorias( cor cor_pecas ) const
