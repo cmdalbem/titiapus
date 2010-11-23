@@ -58,10 +58,9 @@ float JogadorComputador::utilidade(Estado estado, cor cor_time)
     cor cor_inimiga = cor_time==BRANCO? PRETO : BRANCO;
 
     float util = 0;
-	if(estado.npecas[cor_inimiga] != 0)
-		util =  (float)estado.npecas[cor_time]/estado.npecas[cor_inimiga];
-	else
-		util = 1000;
+
+    util =  (float)estado.npecas[cor_time]/(estado.npecas[cor_time] + estado.npecas[cor_inimiga]);
+
 
     /*
     estado.print();
