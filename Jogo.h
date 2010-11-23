@@ -14,7 +14,6 @@ class Jogo{
                 
                 // atributos
                 Estado 				campo;
-				//vector<Jogada> 		jogadasObrigatorias;
                 Jogador*			jogador[TOTAL_COR];
 				Jogador*			jogadorAtual;
 				int					niveisMinimax;
@@ -27,13 +26,10 @@ class Jogo{
                 void				executaJogada( Jogada jogada );
                 void				executarTurno();
                 void				passar();
-                vector<Jogada> 		getJogadasPossiveis();
                 vector<Jogada>		getJogadasObrigatorias();
+                vector<Jogada>		getJogadasPossiveis();
         
         private:
-                vector<Jogada>		ultimasJogadas;
-                
                 void				posicoesIniciais();
-                vector<Jogada> 		tiraJogadasRepetidas( vector<Jogada> jogadas );
 };
 

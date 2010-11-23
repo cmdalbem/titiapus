@@ -1,5 +1,7 @@
 #include <vector>
 #include <stdio.h>
+#include <iostream>
+using namespace std;
 
 #include "Estado.h"
 
@@ -17,7 +19,7 @@ void Linha::set(int index, casa valor)
 {
 	if(index < 0 || index >= NCOL) return;
 	u_int16 val16 = (u_int16)valor;
-	if( val16 > 0x02) return;
+	//if( val16 > 0x03) return;
 
 	u_int16 mask = 0x0003;
 
@@ -47,16 +49,27 @@ Estado::Estado(const Estado & _estado)
 
 Estado::~Estado() {};
 
+/*
 void Estado::setaCasa(int x, int y, casa valor)
 {
     pecas[x].set(y, valor);
-}
+} 
+*/
 
+///*
+void Estado::setaCasa(int x, int y, casa valor)
+{
+    pecas[x][y] = valor;
+} 
+//*/
+
+/*
 void Estado::limpaReservadas()
 {
      for(int lin = 0; lin < NLIN; lin++)
         pecas[lin].limpaReservadas();
 }
+*/
 
 vector<Jogada> Estado::listaPossibilidades( Ponto peca ) const
 {
@@ -93,8 +106,7 @@ vector<Jogada> Estado::listaPossibilidades( Ponto peca ) const
 vector<Estado> Estado::listaSucessores( Ponto peca ) const
 {
 	vector<Estado> sucessores;
-	vector<Jogada> jogadas = listaPossibilidades(peca);
-
+	vector<Jogada> jogadas = getJogadasPossiveis(peca);
 
 	for(unsigned int jog = 0; jog < jogadas.size() ; jog++)
 		sucessores.push_back( movePeca( peca, jogadas[jog].second ).first );
@@ -104,9 +116,16 @@ vector<Estado> Estado::listaSucessores( Ponto peca ) const
 
 pair<Estado,bool> Estado::movePeca( Ponto origem, Ponto destino ) const
 {
-	Estado novo_estado(*this);
+	Estado novo_estado;
+	novo_estado = *(this);
+	
+	novo_estado.ultimasJogadas.push_back(Jogada(origem,destino));
 
+	//puts("vou mover");
+	//cout<<origem.first<<","<<origem.second<<endl;
 	casa peca_movida = novo_estado.pecas[origem.first][origem.second];
+	//novo_estado.print();
+	//cout<<"peca:"<<peca_movida<<endl;
 	novo_estado.setaCasa(origem.first, origem.second, NADA);
 	novo_estado.setaCasa(destino.first, destino.second, peca_movida);
 	casa peca_inimiga = (peca_movida == PCBRANCA)? PCPRETA : PCBRANCA;
@@ -114,7 +133,7 @@ pair<Estado,bool> Estado::movePeca( Ponto origem, Ponto destino ) const
 	Ponto adjacente(destino.first + direcao.first, destino.second + direcao.second);
 	cor cor_peca_inimiga = (peca_inimiga == PCBRANCA)? BRANCO : PRETO;
 	bool comeu_peca = false;
-
+	
 	while( estaDentroCampo(adjacente.first,adjacente.second) && novo_estado.pecas[adjacente.first][adjacente.second] == peca_inimiga )
 	{
 		novo_estado.setaCasa(adjacente.first, adjacente.second, NADA);
@@ -123,6 +142,7 @@ pair<Estado,bool> Estado::movePeca( Ponto origem, Ponto destino ) const
 		novo_estado.npecas[cor_peca_inimiga]--;
 		comeu_peca = true;
 	}
+	
 	return pair<Estado,bool>(novo_estado, comeu_peca);
 }
 
@@ -189,6 +209,69 @@ vector< Jogada > Estado::jogadasObrigatorias( Ponto peca ) const
 	}
 
 	return comComilanca;
+}
+
+
+// transition transition
+
+vector<Jogada> Estado::tiraJogadasRepetidas( vector<Jogada> jogadas ) const
+{
+	for(int k=0; k<jogadas.size(); k++)
+		for(int i=0; i<ultimasJogadas.size(); i++)
+			if(jogadas[k].second == ultimasJogadas[i].first)
+				jogadas.erase(jogadas.begin()+k);
+
+	return jogadas;
+}
+
+vector<Jogada> Estado::getJogadasPossiveis( cor cor_pecas ) const
+{
+	vector<Jogada> jogadasPossiveis, jogadasObrigatorias;
+	
+	if( ultimasJogadas.size() )
+		return getJogadasObrigatorias(cor_pecas);
+	else {
+		jogadasObrigatorias = getJogadasObrigatorias(cor_pecas);		
+	
+		if(jogadasObrigatorias.size())
+			jogadasPossiveis = jogadasObrigatorias;
+		else
+			jogadasPossiveis = listaPossibilidades( cor_pecas );
+	}
+	
+	return jogadasPossiveis;	
+}
+
+vector<Jogada> Estado::getJogadasPossiveis( Ponto peca ) const
+{
+	vector<Jogada> jogadasPossiveis, jogadasObrigatorias;
+	
+	jogadasObrigatorias = getJogadasObrigatorias(peca);		
+	
+	if(jogadasObrigatorias.size())
+		jogadasPossiveis = jogadasObrigatorias;
+	else
+		jogadasPossiveis = listaPossibilidades(peca);
+	
+	return jogadasPossiveis;	
+}
+
+vector<Jogada> Estado::getJogadasObrigatorias( Ponto peca ) const
+{
+	return jogadasObrigatorias( peca );
+}
+
+vector<Jogada> Estado::getJogadasObrigatorias( cor cor_pecas ) const
+{
+	if(ultimasJogadas.size()) // já comeu uma peça neste turno
+	{
+		Jogada ultima = ultimasJogadas[ultimasJogadas.size()-1];
+		return tiraJogadasRepetidas( jogadasObrigatorias( ultima.second ) );
+	}
+	else // primeira jogada do turno
+	{
+		return jogadasObrigatorias( cor_pecas );
+	}
 }
 
 void Estado::print() const

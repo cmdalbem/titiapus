@@ -39,18 +39,30 @@ class Estado
 				Estado(const Estado & _estado);
 				~Estado();
 
-				Linha 				pecas[NLIN];
+				//Linha 				pecas[NLIN];
+				casa				pecas[NLIN][NCOL];
 				int  				npecas[TOTAL_COR];
 
 				void                setaCasa(int x, int y, casa valor);
 				void                limpaReservadas();
+				vector<Jogada>		ultimasJogadas;
 
-				vector< Jogada >	listaPossibilidades( Ponto peca ) const;
-				vector< Jogada > 	listaPossibilidades( cor cor_pecas ) const;
-				vector<Estado> 		listaSucessores( Ponto pto) const;
-				vector<Estado>  	listaSucessores( cor cor_pecas ) const;
 				pair<Estado,bool> 	movePeca( Ponto origem, Ponto destino ) const;
-				vector< Jogada > 	jogadasObrigatorias( cor cor_pecas ) const;
-				vector< Jogada >	jogadasObrigatorias( Ponto peca ) const;
 				void                print() const;
+				
+				vector<Estado> 		listaSucessores( Ponto peca ) const;
+				vector<Estado>  	listaSucessores( cor cor_pecas ) const;
+				vector<Jogada> 		getJogadasObrigatorias( cor cor_pecas ) const;
+				vector<Jogada> 		getJogadasPossiveis( cor cor_pecas ) const;
+				vector<Jogada> 		getJogadasObrigatorias( Ponto peca ) const;
+				vector<Jogada> 		getJogadasPossiveis( Ponto peca ) const;				
+				
+		private:				
+				vector<Jogada> 		jogadasObrigatorias( cor cor_pecas ) const;
+				vector<Jogada>		jogadasObrigatorias( Ponto peca ) const;
+				vector<Jogada>		listaPossibilidades( Ponto peca ) const;
+				vector<Jogada> 		listaPossibilidades( cor cor_pecas ) const;
+				
+				vector<Jogada> 		tiraJogadasRepetidas( vector<Jogada> jogadas ) const;
+
 };

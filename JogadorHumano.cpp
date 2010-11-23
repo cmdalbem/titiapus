@@ -1,6 +1,10 @@
 #include "JogadorHumano.h"
 
-JogadorHumano::JogadorHumano(cor time) : Jogador(time,HUMANO) {}
+#include <iostream>
+using namespace std;
+#include "utils.h"
+
+JogadorHumano::JogadorHumano(cor time, Estado &estado) : Jogador(time,HUMANO,estado) {}
 
 JogadorHumano::~JogadorHumano() {}
 
@@ -28,20 +32,20 @@ tipoEstadoJogador JogadorHumano::cliqueEsquerdo( casa casaClicada, Ponto pos )
 				return PARADO;
 			} 
 			else if( casaClicada==NADA )
-			{
-				/*
-				for(unsigned int i=0; i<jogadasPossiveis.size(); i++)
-					if( jogadasPossiveis[i].first == pecaSelecionada &&
-						jogadasPossiveis[i].second == pos )
-					{
-						jogadaDecidida = jogadasPossiveis[i];
-						return DECIDIU;
-					}
-				
-				return SELECIONADO;*/
-				
+			{	
 				jogadaDecidida = Jogada(pecaSelecionada,pos);
-				return DECIDIU;
+				
+				vector<Jogada> jogadasPossiveis = estadoJogo.getJogadasPossiveis(meuTime);
+				
+				for(unsigned int i=0; i<jogadasPossiveis.size(); i++)
+					if( jogadasPossiveis[i] == jogadaDecidida )
+					{
+						estado = DECIDIU;
+						return estado;
+					}
+					
+				estado = SELECIONADO;
+				return estado;
 			}			
 			break;
 			
@@ -52,16 +56,9 @@ tipoEstadoJogador JogadorHumano::cliqueEsquerdo( casa casaClicada, Ponto pos )
 
 }
 
-Jogada JogadorHumano::retornaJogada( vector<Jogada> _jogadasPossiveis )
+Estado JogadorHumano::retornaJogada()
 {
-	vector<Jogada> jogadasPossiveis = _jogadasPossiveis;
-	
-	for(unsigned int i=0; i<jogadasPossiveis.size(); i++)
-		if( jogadasPossiveis[i] == jogadaDecidida )
-			return jogadaDecidida;
-	
-	estado = SELECIONADO;
-	return Jogada(Ponto(-1,-1),Ponto(-1,-1));
+	return estadoJogo.movePeca(jogadaDecidida.first,jogadaDecidida.second).first;
 }
 
 tipoEstadoJogador JogadorHumano::cliqueDireito( Ponto clicado )

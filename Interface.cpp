@@ -236,11 +236,7 @@ void Interface::cliqueEsquerdo( int x, int y )
 					break;
 				case DECIDIU:
 					puts("estado atual: decidiu");
-					Jogada jogada = jogo->jogadorAtual->retornaJogada(jogo->getJogadasPossiveis());
-					if(jogada.first.first!=-1) {
-						jogo->executaJogada( jogada );
-						((JogadorHumano*)jogo->jogadorAtual)->estado = PARADO;
-					}
+					jogo->executarTurno();
 					break;
 			}
 	}

@@ -1,36 +1,31 @@
 #include "JogadorComputador.h"
 
+#include <iostream>
+using namespace std;
 
-JogadorComputador::JogadorComputador(cor time, int minimax) : Jogador(time,COMPUTADOR), maxProfundidade(minimax) {}
+
+JogadorComputador::JogadorComputador(cor time, Estado &estado, int minimax) : Jogador(time,COMPUTADOR,estado), maxProfundidade(minimax) {}
 
 JogadorComputador::~JogadorComputador() {}
 
-Jogada JogadorComputador::retornaJogada( vector<Jogada> jogadasPossiveis )
+Estado JogadorComputador::retornaJogada()
 {
-    //srand(time(0));
-    vector<Jogada> jogadasObrigatorias = estadoJogo.jogadasObrigatorias(meuTime);
+	const vector<Estado> sucessores = estadoJogo.listaSucessores(meuTime);
 
-	if(jogadasObrigatorias.size()>0)
-		return jogadasObrigatorias[0];//[rand()%jogadasObrigatorias.size()];
-	else
+	float max = -9999999;
+	int maxDecisao = 0;
+
+	for (unsigned int i = 0; i < sucessores.size(); ++i)
 	{
-		const vector<Estado> sucessores = estadoJogo.listaSucessores(meuTime);
-		const vector<Jogada> jogadas = estadoJogo.listaPossibilidades(meuTime);
-
-		float max = -9999999;
-		int maxDecisao = 0;
-
-		for (unsigned int i = 0; i < sucessores.size(); ++i)
-		{
-			float newMax = minimax(sucessores[i], -9999999, 9999999 , maxProfundidade-1, meuTime == BRANCO? PRETO : BRANCO);
-			if (newMax > max) {
-				max = newMax;
-				maxDecisao = i;
-			}
+		float newMax = minimax(sucessores[i], -9999999, 9999999 , maxProfundidade-1, meuTime == BRANCO? PRETO : BRANCO);
+		if (newMax > max) {
+			max = newMax;
+			maxDecisao = i;
 		}
-
-		return jogadas[maxDecisao];
 	}
+	
+	//cout << "tamanho=" << sucessores[maxDecisao].ultimasJogadas.size() << endl;
+	return sucessores[maxDecisao];//.ultimasJogadas[ sucessores[maxDecisao].ultimasJogadas.size()-1 ];
 }
 
 float JogadorComputador::minimax(const Estado& atual, float alfa, float beta, int _profundidade, cor _meuTime)

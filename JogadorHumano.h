@@ -5,7 +5,7 @@
 class JogadorHumano : public Jogador
 {
 	public:
-		JogadorHumano(cor time);
+		JogadorHumano(cor time, Estado &estado);
 		~JogadorHumano();
 
 		// atributos
@@ -13,7 +13,7 @@ class JogadorHumano : public Jogador
 		Ponto				pecaSelecionada;
 		
 		// funções
-		Jogada				retornaJogada( vector<Jogada> jogadasPossiveis );
+		Estado				retornaJogada();
 		tipoEstadoJogador	cliqueEsquerdo( casa peca, Ponto pos );
 		tipoEstadoJogador	cliqueDireito( Ponto clicado );
 		
