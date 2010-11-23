@@ -270,11 +270,9 @@ void Interface::cliqueDireito( int x, int y )
 }
 
 void Interface::mostraPossibilidades( Ponto peca )
-{
-	vector<Jogada> jogadasPossiveis = jogo->getJogadasPossiveis();
-
+{		
+	vector<Jogada> jogadasPossiveis = jogo->campo.getJogadasPossiveis( peca );	
 	for(unsigned int i=0; i<jogadasPossiveis.size(); i++)
-		if( jogadasPossiveis[i].first == peca )
 			marcaPosicao( POS(jogadasPossiveis[i].second.first,jogadasPossiveis[i].second.second) );
 }
 

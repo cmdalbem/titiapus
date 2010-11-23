@@ -32,5 +32,5 @@ bool estaDentroCampo(int i, int j)
 void printJogadas( vector<Jogada> j )
 {
 	for(int i=0; i<j.size(); i++)
-		printf("::(%i,%i)->(%i,%i)\n",j[i].first.second,j[i].first.first,j[i].second.second, j[i].second.first);
+		printf("::(%i,%i)->(%i,%i)\n",j[i].first.second+1,j[i].first.first+1,j[i].second.second+1, j[i].second.first+1);
 }

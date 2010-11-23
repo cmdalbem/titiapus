@@ -103,7 +103,18 @@ vector<Jogada> Estado::listaPossibilidades( Ponto peca ) const
 	return resultado;
 }
 
-vector<Estado> Estado::listaSucessores( Ponto peca ) const
+vector<Estado> Estado::listaSucessoresObrigatorios( Ponto peca ) const
+{
+	vector<Estado> sucessores;
+	vector<Jogada> jogadas = getJogadasObrigatorias(peca);
+
+	for(unsigned int jog = 0; jog < jogadas.size() ; jog++)
+		sucessores.push_back( movePeca( peca, jogadas[jog].second ).first );
+
+	return sucessores;
+}
+
+vector<Estado> Estado::listaSucessoresPossiveis( Ponto peca ) const
 {
 	vector<Estado> sucessores;
 	vector<Jogada> jogadas = getJogadasPossiveis(peca);
@@ -112,6 +123,32 @@ vector<Estado> Estado::listaSucessores( Ponto peca ) const
 		sucessores.push_back( movePeca( peca, jogadas[jog].second ).first );
 
 	return sucessores;
+}
+
+vector<Estado> Estado::listaSucessores( cor cor_pecas ) const
+{
+	casa fail_code = cor_pecas == BRANCO? PCBRANCA : PCPRETA ;
+	vector<Estado> sucessores_cor;
+
+	for(int i = 0 ; i < NLIN ; i++)
+		for(int j = 0 ; j < NCOL ; j++)
+			if(pecas[i][j] == fail_code)
+			{
+				vector<Estado> sucessores_peca = listaSucessoresObrigatorios( Ponto(i,j) );
+				sucessores_cor.insert(sucessores_cor.begin(), sucessores_peca.begin(), sucessores_peca.end());
+			}
+			
+	if(sucessores_cor.size()==0)
+	
+	for(int i = 0 ; i < NLIN ; i++)
+		for(int j = 0 ; j < NCOL ; j++)
+			if(pecas[i][j] == fail_code)
+			{
+				vector<Estado> sucessores_peca = listaSucessoresPossiveis( Ponto(i,j) );
+				sucessores_cor.insert(sucessores_cor.begin(), sucessores_peca.begin(), sucessores_peca.end());
+			}	
+
+	return sucessores_cor;
 }
 
 pair<Estado,bool> Estado::movePeca( Ponto origem, Ponto destino ) const
@@ -162,22 +199,6 @@ vector< Jogada > Estado::listaPossibilidades( cor cor_pecas) const
 			}
 
 	return pares_jogadas;
-}
-
-vector<Estado> Estado::listaSucessores( cor cor_pecas ) const
-{
-	casa fail_code = cor_pecas == BRANCO? PCBRANCA : PCPRETA ;
-	vector<Estado> sucessores_cor;
-
-	for(int i = 0 ; i < NLIN ; i++)
-		for(int j = 0 ; j < NCOL ; j++)
-			if(pecas[i][j] == fail_code)
-			{
-				vector<Estado> sucessores_peca = listaSucessores( Ponto(i,j) );
-				sucessores_cor.insert(sucessores_cor.begin(), sucessores_peca.begin(), sucessores_peca.end());
-			}
-
-	return sucessores_cor;
 }
 
 
@@ -246,7 +267,7 @@ vector<Jogada> Estado::getJogadasPossiveis( Ponto peca ) const
 {
 	vector<Jogada> jogadasPossiveis, jogadasObrigatorias;
 	
-	jogadasObrigatorias = getJogadasObrigatorias(peca);		
+	jogadasObrigatorias = getJogadasObrigatorias(peca);	
 	
 	if(jogadasObrigatorias.size())
 		jogadasPossiveis = jogadasObrigatorias;

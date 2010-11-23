@@ -50,7 +50,8 @@ class Estado
 				pair<Estado,bool> 	movePeca( Ponto origem, Ponto destino ) const;
 				void                print() const;
 				
-				vector<Estado> 		listaSucessores( Ponto peca ) const;
+				vector<Estado> 		listaSucessoresObrigatorios( Ponto peca ) const;
+				vector<Estado> 		listaSucessoresPossiveis( Ponto peca ) const;
 				vector<Estado>  	listaSucessores( cor cor_pecas ) const;
 				vector<Jogada> 		getJogadasObrigatorias( cor cor_pecas ) const;
 				vector<Jogada> 		getJogadasPossiveis( cor cor_pecas ) const;

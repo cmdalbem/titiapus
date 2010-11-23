@@ -11,9 +11,14 @@ JogadorComputador::~JogadorComputador() {}
 Estado JogadorComputador::retornaJogada()
 {
 	const vector<Estado> sucessores = estadoJogo.listaSucessores(meuTime);
+	
+	for(int i=0;i<sucessores.size();i++)
+		printJogadas(sucessores[i].ultimasJogadas);
 
 	float max = -9999999;
 	int maxDecisao = 0;
+	
+	cout << "PROFUNDIDADE=" << maxProfundidade;
 
 	for (unsigned int i = 0; i < sucessores.size(); ++i)
 	{
