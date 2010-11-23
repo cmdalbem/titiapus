@@ -125,8 +125,6 @@ void Jogo::executarTurno()
 			if(!comeu || possiveis.size()==0) //se nao comeu peça ou nao tem mais jogadas possiveis
 				passar();
 			else {
-				//atualizarTela();
-				//sleep(1);
 				executarTurno();			
 			}
 		}

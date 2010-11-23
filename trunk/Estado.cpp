@@ -49,19 +49,19 @@ Estado::Estado(const Estado & _estado)
 
 Estado::~Estado() {};
 
-/*
+///*
 void Estado::setaCasa(int x, int y, casa valor)
 {
     pecas[x].set(y, valor);
 } 
-*/
+//*/
 
-///*
+/*
 void Estado::setaCasa(int x, int y, casa valor)
 {
     pecas[x][y] = valor;
 } 
-//*/
+*/
 
 /*
 void Estado::limpaReservadas()
@@ -288,12 +288,13 @@ vector<Jogada> Estado::getJogadasObrigatorias( Ponto peca ) const
 {
 	vector<Jogada> vacuo;
 	
-	if(ultimasJogadas.size()) {
+	if( ultimasJogadas.size() == 0 )
+		return jogadasObrigatorias( peca );
+	else
 		if( ultimasJogadas[ultimasJogadas.size()-1].second == peca )
 			return jogadasObrigatorias( peca );
 		else
 			return vacuo;
-	}
 }
 
 vector<Jogada> Estado::getJogadasObrigatorias( cor cor_pecas ) const
