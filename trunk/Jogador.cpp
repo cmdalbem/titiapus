@@ -1,9 +1,9 @@
 #include "Jogador.h"
 
-Jogador::Jogador(cor time, tipoJogador novoTipo) : meuTime(time), tipo(novoTipo) {}
+Jogador::Jogador(cor time, tipoJogador novoTipo, Estado &estadoAtual) : meuTime(time), tipo(novoTipo), estadoJogo(estadoAtual){}
 Jogador::~Jogador() {}
 
-void Jogador::setaEstadoAtual(const Estado& estadoAtual)
+void Jogador::setaEstadoAtual(Estado &estadoAtual)
 {
 	estadoJogo = estadoAtual;
 }

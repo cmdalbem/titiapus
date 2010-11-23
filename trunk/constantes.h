@@ -27,7 +27,7 @@ enum cor
 
 enum casa
 {
-    NADA, PCBRANCA, PCPRETA,
+    NADA, PCBRANCA, PCPRETA, RESERVADA,
     TOTAL_CASA
 };
 

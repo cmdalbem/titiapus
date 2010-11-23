@@ -7,14 +7,14 @@
 class Jogador
 {
 	public:
-		Jogador(cor time, tipoJogador tipo );
+		Jogador(cor time, tipoJogador tipo, Estado &estadoAtual );
 		~Jogador();
 		
 		tipoJogador		tipo;
 		cor 			meuTime;
 
-		void 			setaEstadoAtual(const Estado& estadoAtual);
-		virtual Jogada 	retornaJogada( vector<Jogada> jogadasPossiveis ) = 0;
+		void 			setaEstadoAtual(Estado &estadoAtual);
+		virtual Estado 	retornaJogada() = 0;
 	protected:
-		Estado 			estadoJogo;
+		Estado& 		estadoJogo;
 };
