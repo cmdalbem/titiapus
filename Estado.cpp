@@ -4,6 +4,32 @@
 #include "Estado.h"
 
 
+casa Linha::operator[] (int index) const
+{
+	if(index < 0 || index >= NCOL) return NADA;
+
+	u_int16 aux = _linha;
+	aux >>= 2*index;
+	return (casa) (aux & 0x0003);
+}
+
+void Linha::set(int index, casa valor)
+{
+	if(index < 0 || index >= NCOL) return;
+	u_int16 val16 = (u_int16)valor;
+	if( val16 > 0x02) return;
+
+	u_int16 mask = 0x0003;
+
+    val16 <<= 2*index;
+    mask <<= 2*index;
+
+	mask = ~mask;
+
+	_linha = (_linha & mask) | val16;
+}
+
+//---------------------------------------
 
 Estado::Estado() {};
 
@@ -13,6 +39,11 @@ Estado::Estado(const Estado & _estado)
 }
 
 Estado::~Estado() {};
+
+void Estado::setaCasa(int x, int y, casa valor)
+{
+    pecas[x].set(y, valor);
+}
 
 vector<Jogada> Estado::listaPossibilidades( Ponto peca ) const
 {
@@ -63,8 +94,8 @@ pair<Estado,bool> Estado::movePeca( Ponto origem, Ponto destino ) const
 	Estado novo_estado(*this);
 
 	casa peca_movida = novo_estado.pecas[origem.first][origem.second];
-	novo_estado.pecas[origem.first][origem.second] = NADA;
-	novo_estado.pecas[destino.first][destino.second] = peca_movida;
+	novo_estado.setaCasa(origem.first, origem.second, NADA);
+	novo_estado.setaCasa(destino.first, destino.second, peca_movida);
 	casa peca_inimiga = (peca_movida == PCBRANCA)? PCPRETA : PCBRANCA;
 	Ponto direcao(destino.first - origem.first, destino.second - origem.second); // Direção da peça
 	Ponto adjacente(destino.first + direcao.first, destino.second + direcao.second);
@@ -73,7 +104,7 @@ pair<Estado,bool> Estado::movePeca( Ponto origem, Ponto destino ) const
 
 	while( estaDentroCampo(adjacente.first,adjacente.second) && novo_estado.pecas[adjacente.first][adjacente.second] == peca_inimiga )
 	{
-		novo_estado.pecas[adjacente.first][adjacente.second] = NADA;
+		novo_estado.setaCasa(adjacente.first, adjacente.second, NADA);
 		adjacente.first += direcao.first;
 		adjacente.second += direcao.second;
 		novo_estado.npecas[cor_peca_inimiga]--;
