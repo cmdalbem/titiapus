@@ -55,10 +55,6 @@ void Interface::desenhaTabuleiro()
 	cairo_set_source_rgb( cr, 0, 0, 0);
 	cairo_set_line_width( cr, 1.5);
 
-	cairo_text_extents_t te;
-	cairo_select_font_face (cr, "Georgia", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-	cairo_set_font_size (cr, 10);
-
 	// linhas
 	for(int i=0; i<NLIN; i++) {
 		cairo_move_to( cr, FRAMEX, ((TELAY-2*FRAMEY)/((float)NLIN-1))*i + FRAMEY );
@@ -72,21 +68,31 @@ void Interface::desenhaTabuleiro()
 	}
 
 	// diagonais
-	char ch[3];
 	int oscilador=1;
 	for(int i=0; i<NLIN-1; i++) {
 		for(int j=0; j<NCOL-1; j++) {
-			sprintf(ch, "%i,%i", i+1,j+1);
-
-			cairo_text_extents (cr, ch, &te);
-			cairo_move_to (cr,  5 - te.width/2 - te.x_bearing, 5 - te.height/2 - te.y_bearing);
-			cairo_show_text (cr, ch);
-	
 			cairo_move_to( cr, POS((i+oscilador),(j)) );
 			cairo_line_to( cr, POS((i+!oscilador),(j+1)) );
 			oscilador = !oscilador;
 		}
 		oscilador = !oscilador;
+	}
+	
+	// números
+	cairo_set_line_width( cr, 1);
+
+	cairo_text_extents_t te;
+	cairo_select_font_face (cr, "Georgia", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+	cairo_set_font_size (cr, 9);	
+	
+	char ch[3];
+	for(int i=0; i<NLIN; i++) {
+		for(int j=0; j<NCOL; j++) {
+			sprintf(ch, "%i,%i", j+1,i+1);
+			cairo_text_extents (cr, ch, &te);
+			cairo_move_to (cr,  LIN(j) + 10 - j*7 - te.width / 2 - te.x_bearing, COL(i) - 5*(NLIN-i+1) - te.height / 2 - te.y_bearing);
+			cairo_show_text (cr, ch);
+		}
 	}
 	
 	

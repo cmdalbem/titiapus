@@ -39,8 +39,8 @@ class Estado
 				Estado(const Estado & _estado);
 				~Estado();
 
-				//Linha 				pecas[NLIN];
-				casa				pecas[NLIN][NCOL];
+				Linha 				pecas[NLIN];
+				//casa				pecas[NLIN][NCOL];
 				int  				npecas[TOTAL_COR];
 
 				void                setaCasa(int x, int y, casa valor);
