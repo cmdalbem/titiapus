@@ -29,6 +29,13 @@ void Linha::set(int index, casa valor)
 	_linha = (_linha & mask) | val16;
 }
 
+void Linha::limpaReservadas()
+{
+    for(u_int16 mask = 0x3000; mask != 0; mask = mask >> 2)
+        if((_linha & mask) == mask)
+            _linha = _linha & !mask;
+}
+
 //---------------------------------------
 
 Estado::Estado() {};
@@ -43,6 +50,12 @@ Estado::~Estado() {};
 void Estado::setaCasa(int x, int y, casa valor)
 {
     pecas[x].set(y, valor);
+}
+
+void Estado::limpaReservadas()
+{
+     for(int lin = 0; lin < NLIN; lin++)
+        pecas[lin].limpaReservadas();
 }
 
 vector<Jogada> Estado::listaPossibilidades( Ponto peca ) const
