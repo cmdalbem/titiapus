@@ -44,12 +44,12 @@ void Jogo::novo( tipoJogador _jogadorBrancas, tipoJogador _jogadorPretas )
     esperandoJogada = false;
 
     if(_jogadorBrancas == COMPUTADOR)
-		jogador[BRANCO] = new JogadorComputador(BRANCO,campo,2);
+		jogador[BRANCO] = new JogadorComputador(BRANCO,campo,niveisMinimax);
 	else
 		jogador[BRANCO] = new JogadorHumano(BRANCO,campo);
 		
 	if(_jogadorPretas == COMPUTADOR)
-		jogador[PRETO] = new JogadorComputador(PRETO,campo,2);
+		jogador[PRETO] = new JogadorComputador(PRETO,campo,niveisMinimax);
 	else
 		jogador[PRETO] = new JogadorHumano(PRETO,campo);
 		
@@ -129,7 +129,7 @@ void Jogo::passar()
 		cout << "Jogador 1:" << endl;
 		jogadorAtual = jogador[0];
 	}
-	printJogadas(campo.ultimasJogadas);
+	//printJogadas(campo.ultimasJogadas);
 		
 	campo.ultimasJogadas.clear();
 	
