@@ -25,6 +25,8 @@ void comecar(GtkWidget *widget, gpointer label) { interface.comecar(); }
 
 void passar(GtkWidget *widget, gpointer label) { interface.passar(); }
     
+void visPosicoes(GtkWidget *widget, gpointer label) { interface.mudaVisPosicoes(); }
+    
     
 void on_window_destroy (GtkObject *object, gpointer user_data)
 // Fecha a GTK ao receber o sinal de que a janela principal foi fechada
@@ -87,10 +89,11 @@ int main (int argc, char *argv[])
         
         // lê XML da Glade
         builder = gtk_builder_new ();
-        gtk_builder_add_from_file (builder, "gui/gui.glade", NULL);
+        gtk_builder_add_from_file (builder, "gui/gui2.glade", NULL);
 
         // recupera ponteiros de widgets do XML da Glade
         interface.janela = GTK_WIDGET (gtk_builder_get_object (builder, "janela"));
+        interface.janelaConfig = GTK_WIDGET (gtk_builder_get_object (builder, "janelaConfig"));
 			//gdk_gc_set_line_attributes(interface.janela->style->black_gc, 2, (GdkLineStyle)1,(GdkCapStyle)1,(GdkJoinStyle)1);
         interface.tela = GTK_WIDGET (gtk_builder_get_object (builder, "tela"));
 			gtk_widget_set_size_request(interface.tela, TELAX, TELAY);
@@ -129,15 +132,21 @@ int main (int argc, char *argv[])
 						  "value-changed", G_CALLBACK(niveisMinimaxCallback), NULL);
 		
 		// opções do menu superior
-		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "menuReseta")),
+		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "menuComecar")),
+						  "activate", G_CALLBACK(comecar), NULL);						  
+		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "menuResetar")),
 						  "activate", G_CALLBACK(resetar), NULL);						  
 		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "menuNovo")),
 						  "activate", G_CALLBACK(novo), NULL);			  						  
 		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "menuSair")),
-						  "activate", G_CALLBACK(gtk_main_quit), NULL);			  							  
+						  "activate", G_CALLBACK(gtk_main_quit), NULL);
+		g_signal_connect( GTK_WIDGET (gtk_builder_get_object (builder, "menuVis")),
+						  "activate", G_CALLBACK(visPosicoes), NULL);
+						  						  
 						  
 
-        gtk_widget_show (interface.janela);       
+        gtk_widget_show (interface.janela);
+        gtk_widget_show (interface.janelaConfig);
         
         // GTK Main loop
         gtk_main();
