@@ -35,16 +35,16 @@ Estado JogadorComputador::retornaJogada()
 
 float JogadorComputador::minimax(const Estado& atual, float alfa, float beta, int _profundidade, cor _meuTime)
 {
+	vector<Estado> filhos;
+	
 	if ( _profundidade < 0 )
 		return -9999999;
-	else if ( _profundidade == 0)
+	else if ( _profundidade == 0 || (filhos = atual.listaSucessores(_meuTime)).size() )
 		{ //should test if is leaf, but nah :)
 			return JogadorComputador::utilidade(atual, _meuTime);
 		}
 	else
 	{
-		vector<Estado> filhos = atual.listaSucessores(_meuTime);
-
 		for (unsigned int i=0; i < filhos.size(); ++i)
 		{
 			alfa = max(alfa, - minimax(filhos[i], -beta, -alfa, _profundidade-1, _meuTime == BRANCO? PRETO : BRANCO) );
