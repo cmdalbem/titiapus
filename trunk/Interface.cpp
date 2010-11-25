@@ -12,6 +12,7 @@ Interface::Interface() {
 	janela = NULL;
 	tela = NULL;
 	pixmap = NULL;
+	visPosicoes = true;
 }
 
 Interface::~Interface() {}
@@ -79,19 +80,21 @@ void Interface::desenhaTabuleiro()
 	}
 	
 	// números
-	cairo_set_line_width( cr, 1);
+	if(visPosicoes) {
+		cairo_set_line_width( cr, 1);
 
-	cairo_text_extents_t te;
-	cairo_select_font_face (cr, "Georgia", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-	cairo_set_font_size (cr, 9);	
-	
-	char ch[3];
-	for(int i=0; i<NLIN; i++) {
-		for(int j=0; j<NCOL; j++) {
-			sprintf(ch, "%i,%i", j+1,i+1);
-			cairo_text_extents (cr, ch, &te);
-			cairo_move_to (cr,  LIN(j) + 10 - j*7 - te.width / 2 - te.x_bearing, COL(i) - 5*(NLIN-i+1) - te.height / 2 - te.y_bearing);
-			cairo_show_text (cr, ch);
+		cairo_text_extents_t te;
+		cairo_select_font_face (cr, "Georgia", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+		cairo_set_font_size (cr, 9);	
+		
+		char ch[3];
+		for(int i=0; i<NLIN; i++) {
+			for(int j=0; j<NCOL; j++) {
+				sprintf(ch, "%i,%i", j+1,i+1);
+				cairo_text_extents (cr, ch, &te);
+				cairo_move_to (cr,  LIN(j) + 10 - j*7 - te.width / 2 - te.x_bearing, COL(i) - 5*(NLIN-i+1) - te.height / 2 - te.y_bearing);
+				cairo_show_text (cr, ch);
+			}
 		}
 	}
 	
@@ -192,6 +195,12 @@ void Interface::novo_ok()
 void Interface::novo_cancelar()
 {
 	gtk_widget_hide_all( dialog );
+}
+
+void Interface::mudaVisPosicoes()
+{
+	visPosicoes = !visPosicoes;
+	atualizaTela();
 }
 
 void Interface::atualizaPainel()

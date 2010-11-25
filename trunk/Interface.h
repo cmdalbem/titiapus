@@ -15,7 +15,7 @@ class Interface
 				Jogo 				*jogo;
 				
 				// gtk widgets
-				GtkWidget 			*janela;
+				GtkWidget 			*janela, *janelaConfig;
 				GtkWidget 			*tela;
 				GtkWidget			*dialog;
 				GdkPixmap 			*pixmap; //mapa de pixels da tela do tabuleiro
@@ -23,6 +23,7 @@ class Interface
 				GtkWidget			*painel1, *painel2, *painel3, *painel4;
 				GtkWidget			*painelTurnos;
 								
+				bool				visPosicoes;
 				
 				void 			inicializa();
 				
@@ -39,6 +40,7 @@ class Interface
 				void			passar();
 				void 			novo_ok();
 				void 			novo_cancelar();
+				void			mudaVisPosicoes();
 				
 		private:				
 				// funções gerais
